@@ -10,9 +10,33 @@
 		EC0490452D3E686600B793D5 /* crosspostr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = crosspostr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EC3676ED2D40EC8800B79489 /* Exceptions for "crosspostr" folder in "crosspostr" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				data/Supabase.swift,
+			);
+			target = EC0490442D3E686600B793D5 /* crosspostr */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		EC3676EE2D40EC8800B79489 /* Exceptions for "crosspostr" folder in "Copy Bundle Resources" phase from "crosspostr" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = EC0490432D3E686600B793D5 /* Resources */;
+			membershipExceptions = (
+				data/Supabase.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EC0490472D3E686600B793D5 /* crosspostr */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EC3676ED2D40EC8800B79489 /* Exceptions for "crosspostr" folder in "crosspostr" target */,
+				EC3676EE2D40EC8800B79489 /* Exceptions for "crosspostr" folder in "Copy Bundle Resources" phase from "crosspostr" target */,
+			);
 			path = crosspostr;
 			sourceTree = "<group>";
 		};
