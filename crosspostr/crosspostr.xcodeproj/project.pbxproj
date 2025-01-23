@@ -13,6 +13,7 @@
 		EC0B8E762D4248280099BC1C /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = EC0B8E752D4248280099BC1C /* Realtime */; };
 		EC0B8E782D4248280099BC1C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = EC0B8E772D4248280099BC1C /* Storage */; };
 		EC0B8E7A2D4248280099BC1C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = EC0B8E792D4248280099BC1C /* Supabase */; };
+		EC39FAE82D425BF90099A7BC /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = EC39FAE72D425BF90099A7BC /* Lottie */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC0B8E742D4248280099BC1C /* PostgREST in Frameworks */,
+				EC39FAE82D425BF90099A7BC /* Lottie in Frameworks */,
 				EC0B8E722D4248280099BC1C /* Functions in Frameworks */,
 				EC0B8E7A2D4248280099BC1C /* Supabase in Frameworks */,
 				EC0B8E702D4248280099BC1C /* Auth in Frameworks */,
@@ -86,6 +88,7 @@
 				EC0B8E752D4248280099BC1C /* Realtime */,
 				EC0B8E772D4248280099BC1C /* Storage */,
 				EC0B8E792D4248280099BC1C /* Supabase */,
+				EC39FAE72D425BF90099A7BC /* Lottie */,
 			);
 			productName = crosspostr;
 			productReference = EC0490452D3E686600B793D5 /* crosspostr.app */;
@@ -117,6 +120,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				EC0B8E6E2D4248280099BC1C /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				EC39FAE62D425BF90099A7BC /* XCRemoteSwiftPackageReference "lottie-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EC0490462D3E686600B793D5 /* Products */;
@@ -282,8 +286,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -291,6 +295,10 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.remo.crosspostr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -311,8 +319,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -320,6 +328,10 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.remo.crosspostr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -358,6 +370,14 @@
 				minimumVersion = 2.5.1;
 			};
 		};
+		EC39FAE62D425BF90099A7BC /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -390,6 +410,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EC0B8E6E2D4248280099BC1C /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		EC39FAE72D425BF90099A7BC /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EC39FAE62D425BF90099A7BC /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
