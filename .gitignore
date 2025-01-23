@@ -50,3 +50,5 @@ ehthumbs.db
 Thumbs.db
 
 Pods/
+crosspostr/crosspostr/data/apiKey.swift
+crosspostr/crosspostr/data/apiHost.swift
