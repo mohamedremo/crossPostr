@@ -113,8 +113,28 @@ Unsere App **crossPostr** folgt der **MVVM-Architektur** (Model-View-ViewModel),
 
 Nach Abschluss der Mindestanforderungen
 
-- [ ]  **Automatisierung** (KI-gestützte vorschläge für optimale Zeiten zum Posten)
-- [ ]  **Erweiterte Analytics** (Detailliertere Statistiken, wie demografische Insights und plattformspezifische Erfolgsfaktoren.)
-- [ ]  **Zusätzliche Plattformen** (Integration weiterer Netzwerke wie TikTok, Pinterest und YouTube.)
-- [ ]  **Team-Management** (Rollen- und Berechtigungsverwaltung für kollaboratives Arbeiten im Team.)
-- [ ]  **Premium-Funktionen** - Ne scherz ist ForFree ^^
+- [ ] **Automatisierung** (KI-gestützte vorschläge für optimale Zeiten zum Posten)
+- [ ] **Erweiterte Analytics** (Detailliertere Statistiken, wie demografische Insights und plattformspezifische Erfolgsfaktoren.)
+- [ ] **Zusätzliche Plattformen** (Integration weiterer Netzwerke wie TikTok, Pinterest und YouTube.)
+- [ ] **Team-Management** (Rollen- und Berechtigungsverwaltung für kollaboratives Arbeiten im Team.)
+- [ ] **Premium-Funktionen** - Ne scherz ist ForFree ^^
+  
+  
+
+
+
+#Installation 
+
+Api Key + URL muss in einem enum in dieser Konstellation gespeichert werden.
+
+-**enum** apiKey: String {
+
+    **case** supabase =  <API-KEY>
+
+}
+
+**enum** apiHost: String {
+
+    **case** supabase = <API-URL>
+
+}
