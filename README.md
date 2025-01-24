@@ -2,7 +2,7 @@
 
 **Deine Storys. Überall.**
 
-Unsere App **crossPostr** bietet eine einfache und effiziente Lösung, um Social-Media-Beiträge auf mehreren Plattformen gleichzeitig zu planen und zu veröffentlichen. Sie richtet sich an Content Creator, Social-Media-Manager und Unternehmen, die Zeit sparen und ihre Reichweite maximieren möchten.
+**crossPostr** bietet eine einfache und effiziente Lösung, um Social-Media-Beiträge auf mehreren Plattformen gleichzeitig zu planen und zu veröffentlichen. Sie richtet sich an Content Creator, Social-Media-Manager und Unternehmen, die Zeit sparen und ihre Reichweite maximieren möchten.
 
 ## Design
 
@@ -13,10 +13,6 @@ Unsere App **crossPostr** bietet eine einfache und effiziente Lösung, um Social
 </p>
 
 ## Features
-
-Hier kommen alle Features rein, welche deine App bietet.
-
-**Tipp: Du kannst diese Punkte auch am Anfang ausfüllen und mit der Zeit abhaken, sodass am Ende eine vollständige Liste entsteht.**
 
 - [ ] 🌐  **Plattformübergreifendes Posten**: Inhalte gleichzeitig auf mehreren Social-Media-Plattformen veröffentlichen.
 - [ ] ⏰  **Beitragsplanung**: Posts im Voraus planen mit Datum- und Uhrzeit-Auswahl.
@@ -29,7 +25,7 @@ Hier kommen alle Features rein, welche deine App bietet.
 
 #### Projektaufbau
 
-Unsere App **crossPostr** folgt der **MVVM-Architektur** (Model-View-ViewModel), um eine klare Trennung von Logik und UI zu gewährleisten. Die Ordnerstruktur ist wie folgt aufgebaut:
+**crossPostr** folgt der **MVVM-Architektur** (Model-View-ViewModel), um eine klare Trennung von Logik und UI zu gewährleisten. Die Ordnerstruktur ist wie folgt aufgebaut:
 
 **Ordnerstruktur**
 
