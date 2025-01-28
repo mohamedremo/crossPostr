@@ -7,33 +7,34 @@
 
 import Foundation
 import Supabase
+import FirebaseAuth
+
+/**
+ The `BackendClient` class provides a singleton instance that manages interactions
+ with the backend services, including Supabase for database access and Firebase for authentication.
+ This class ensures that there is only one instance of the client used throughout the app.
+
+ - Properties:
+    - `supabase`: A `SupabaseClient` instance that connects to Supabase for backend operations.
+    - `auth`: An `Auth` instance from Firebase used for handling user authentication.
+
+ - Author: Mohamed Remo
+ - Version: 1.0
+ */
 
 struct BackendClient {
+    /// The singleton instance of the `BackendClient`.
     static let shared: BackendClient = BackendClient()
-
+    
+    private init() {} /// ensures singleton
+    
+    // MARK: - Supabase
+    /// The `SupabaseClient` instance to interact with Supabase backend services.
     let supabase = SupabaseClient(
         supabaseURL: URL(string: apiHost.supabase.rawValue)!,
         supabaseKey: apiKey.supabase.rawValue)
-
-}
-
-class Repository: ObservableObject {
-    static let shared: Repository = Repository()
     
-    private let supabaseClient = BackendClient.shared.supabase
-    
-    func getAllDrafts() async throws -> [Draft] {
-        let data: [Draft] = try await supabaseClient.from("drafts") // Wählt die tabelle
-            .select("*") // Wählt das Feld. In diesem Falle "title" Wenn select leer dann ganze Tabelle
-            .execute()
-            .value
-        
-        return data
-    }
-}
-
-
-struct Draft: Identifiable, Codable {
-    let id: UUID
-    let title: String
+    // MARK: - Firebase
+    /// The `Auth` instance from Firebase used for user authentication.
+    let auth = Auth.auth()
 }

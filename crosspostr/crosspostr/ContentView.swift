@@ -4,12 +4,11 @@
 //
 //  Created by Mohamed Remo on 20.01.25.
 //
-
 import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    let repo = Repository()
+    let repo = Repository.shared
     @State var items: [Draft] = []
    
     var body: some View {
@@ -24,7 +23,6 @@ struct ContentView: View {
             } catch {
                 print(error.localizedDescription)
             }
-            
         }
     }
 }

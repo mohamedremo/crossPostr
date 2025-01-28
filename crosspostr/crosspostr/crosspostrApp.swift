@@ -7,9 +7,12 @@
 
 import SwiftUI
 import SwiftData
+import Firebase
 
 @main
 struct crosspostrApp: App {
+    
+    //MARK: - SwiftData - ModelContainer Initialiserung
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -22,6 +25,12 @@ struct crosspostrApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    
+    // MARK: - FIREBASE - Initialisierung
+    init() {
+        FirebaseConfiguration.shared.setLoggerLevel(.max)
+        FirebaseApp.configure()
+    }
 
     var body: some Scene {
         WindowGroup {
