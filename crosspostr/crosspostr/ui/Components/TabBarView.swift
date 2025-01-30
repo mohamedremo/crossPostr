@@ -10,7 +10,7 @@ import SwiftUI
 enum TabBarPage: CaseIterable, Identifiable {
     case home
     case create
-    case settings
+    case analytics
 
     var label: String {
         switch self {
@@ -18,8 +18,8 @@ enum TabBarPage: CaseIterable, Identifiable {
             return "Home"
         case .create:
             return "Create"
-        case .settings:
-            return "Settings"
+        case .analytics:
+            return "Analytics"
         }
     }
 
@@ -29,8 +29,8 @@ enum TabBarPage: CaseIterable, Identifiable {
             return "house"
         case .create:
             return "plus.circle"
-        case .settings:
-            return "gear"
+        case .analytics:
+            return "chart.pie"
         }
     }
 
@@ -71,15 +71,17 @@ struct TabButton: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            Image(systemName: tab.image)
-                .font(.title3)
-                .fontWeight(tab == vM.selectedPage ? .bold : .regular)
-                .foregroundStyle(AppTheme.blueGradient)
+            Image(systemName: vM.checkTab(tab) ? tab.image.appending(".fill") : tab.image)
+                .font(vM.checkTab(tab) ? .title : .title2)
+                .fontWeight(vM.checkTab(tab) ? .bold : .regular)
+                .foregroundStyle(AppTheme.dipsetPurple)
             Text(tab.label)
-                .font(.footnote)
+                .font(vM.checkTab(tab) ? .caption : .caption2)
+                .fontWeight(vM.checkTab(tab) ? .medium : .ultraLight)
         }
+        .frame(maxWidth: .infinity)
         .onTapGesture {
-            withAnimation(.easeInOut){
+            withAnimation(.easeInOut) {
                 vM.selectedPage = tab
             }
         }
@@ -88,15 +90,20 @@ struct TabButton: View {
 
 class TabBarViewModel: ObservableObject {
     @Published var selectedPage: TabBarPage = .home
+    
+    func checkTab(_ actualTab: TabBarPage) -> Bool {
+        return actualTab == selectedPage
+    }
 }
 
 #Preview {
     @Previewable @StateObject var vM = TabBarViewModel()
+    @Previewable @State var authVM: AuthViewModel = AuthViewModel()
     TabBarView(vM: vM) {
         switch vM.selectedPage {
-        case .home: Text("home")
+        case .home: LoginScreen(vM: authVM)
         case .create: Text("Create")
-        case .settings: Text("Settings")
+        case .analytics: OnBoardingScreen()
         }
     }
 }
