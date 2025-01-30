@@ -7,50 +7,57 @@
 import SwiftUI
 
 struct OnBoardingScreen: View {
-
+    @ObservedObject var vM: AuthViewModel
+    var uiScreen = UIScreen.main.bounds
     var body: some View {
-        ZStack {
-            AppTheme.blueGradient.ignoresSafeArea()
-            HStack {
-                Spacer()
-                Image(.avatarRightRead)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: .infinity, height: 450)
-            }
+        NavigationStack {
+            ZStack {
+                AppTheme.blueGradient.ignoresSafeArea()
+                HStack {
+                    Spacer()
+                    Image(.avatarRightRead)
+                        .resizable()
+                        .frame(width: uiScreen.width, height: 400, alignment: .trailing)
+                }
+                VStack {
+                    Spacer()
+                    InfoBox()
+                        .padding(.bottom, 300)
+                    CustomNavigationButton(
+                        title: "Login",
+                        destination: {
+                            LoginScreen(vM: vM)
+                        }
+                    )
+                    .padding(.vertical, 8)
+                    
+                    CustomNavigationButton(
+                        title: "Register",
+                        destination: {
+                            LoginScreen(vM: vM)
+                        }
+                    )
 
-            VStack {
-                Spacer()
-                InfoBox()
-                    .padding(.bottom, 300)
-                CustomButton(
-                    title: "Jetzt Starten!",
-                    action: {
-                        //BUTTON LOGIK
+                    HStack {
+                        Image(.lineLeft)
+                        Text("or login with")
+                            .font(.footnote)
+                        Image(.lineRight)
                     }
-                )
-                .padding(.vertical, 30)
+                    HStack {
+                        SocialMediaButton(
+                            image: .google,
+                            action: {
 
-                HStack {
-                    Image(.lineLeft)
-                    Text("or login with")
-                        .font(.footnote)
-                    Image(.lineRight)
+                            })
+                        SocialMediaButton(
+                            image: .apple,
+                            action: {
+
+                            })
+                    }
+                    Spacer()
                 }
-
-                HStack {
-                    SocialMediaButton(
-                        image: .google,
-                        action: {
-
-                        })
-                    SocialMediaButton(
-                        image: .apple,
-                        action: {
-
-                        })
-                }
-                Spacer()
             }
         }
         .ignoresSafeArea()
@@ -58,6 +65,53 @@ struct OnBoardingScreen: View {
 
 }
 
+struct CustomNavigationButton<Content: View>: View {
+    var title: String
+    @ViewBuilder var destination: () -> Content
+    var body: some View {
+        NavigationLink {
+            destination()
+        } label: {
+            ZStack {
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .frame(width: 147, height: 50)
+                    .background(
+                        LinearGradient(
+                            stops: [
+                                Gradient.Stop(
+                                    color: .white.opacity(0.9), location: 0.00),
+                                Gradient.Stop(
+                                    color: .white.opacity(0.6), location: 1.00),
+                            ],
+                            startPoint: UnitPoint(x: 0.5, y: 0),
+                            endPoint: UnitPoint(x: 0.5, y: 1)
+                        )
+                    )
+                    .cornerRadius(20)
+                Text(title)
+                    .foregroundStyle(.black)
+                    .font(
+                        .system(size: 18, weight: .semibold, design: .rounded))
+            }
+        }
+    }
+}
+
+
+struct OnBoarding: View {
+    @ObservedObject var vM: AuthViewModel
+    var body: some View {
+        OnBoardingScreen(vM: vM)
+    }
+}
+
+#Preview("OnBoardingProcess") {
+    @Previewable @StateObject var vM = AuthViewModel()
+    OnBoarding(vM: vM)
+}
+
 #Preview {
-    OnBoardingScreen()
+    @Previewable @StateObject var vM = AuthViewModel()
+    OnBoardingScreen(vM: vM)
 }

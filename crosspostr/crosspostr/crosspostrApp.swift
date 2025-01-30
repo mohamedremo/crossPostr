@@ -5,37 +5,34 @@
 //  Created by Mohamed Remo on 20.01.25.
 //
 
-import SwiftUI
-import SwiftData
 import Firebase
+import SwiftData
+import SwiftUI
 
 @main
 struct crosspostrApp: App {
-    
-    //MARK: - SwiftData - ModelContainer Initialiserung
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+    @StateObject var authVM: AuthViewModel = AuthViewModel()
+    @StateObject var tabVM: TabBarViewModel = TabBarViewModel()
 
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-    
     // MARK: - FIREBASE - Initialisierung
     init() {
-        FirebaseConfiguration.shared.setLoggerLevel(.max)
+        FirebaseConfiguration.shared.setLoggerLevel(.min)
         FirebaseApp.configure()
     }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authVM.isLoggedIn {
+                TabBarView(vM: tabVM) {
+                    switch tabVM.selectedPage {
+                    case .home: Text("home")
+                    case .create: Text("Create")
+                    case .settings: Text("Settings")
+                    }
+                }
+            } else {
+                OnBoarding(vM: authVM)
+            }
         }
-        .modelContainer(sharedModelContainer)
     }
 }

@@ -79,7 +79,9 @@ struct TabButton: View {
                 .font(.footnote)
         }
         .onTapGesture {
-            vM.selectedPage = tab
+            withAnimation(.easeInOut){
+                vM.selectedPage = tab
+            }
         }
     }
 }
