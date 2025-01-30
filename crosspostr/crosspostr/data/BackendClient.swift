@@ -1,10 +1,3 @@
-//
-//  SupabaseClient.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 23.01.25.
-//
-
 import Foundation
 import Supabase
 import FirebaseAuth

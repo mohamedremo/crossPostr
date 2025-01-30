@@ -5,6 +5,9 @@
 //  Created by Mohamed Remo on 28.01.25.
 //
 import Foundation
+import Firebase
+import Supabase
+import FirebaseAuth
 
 /**
  The `Repository` class provides access to the app's data layer, handling communication
@@ -23,7 +26,7 @@ import Foundation
  - Author: Mohamed Remo
  - Version: 1.0
  */
-
+@MainActor
 class Repository: ObservableObject {
     // MARK: - shared instances
     
@@ -54,6 +57,10 @@ class Repository: ObservableObject {
     
     // MARK: - Firebase functions
     
+    var currentUser: FirebaseAuth.User? {
+        return authClient.currentUser
+    }
+    
     /**
         Logs in a user using their email and password through Firebase Auth.
         
@@ -63,8 +70,13 @@ class Repository: ObservableObject {
         
         - Throws: An error if the authentication fails.
         */
+    
     func login(email: String, password: String) async throws {
         try await authClient.signIn(withEmail: email, password: password)
+    }
+    
+    func register(email: String, password: String) async throws {
+        try await authClient.createUser(withEmail: email, password: password)
     }
     
 }
