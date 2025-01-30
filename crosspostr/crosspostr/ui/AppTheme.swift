@@ -25,4 +25,6 @@ struct AppTheme {
         startPoint: .top,
         endPoint: .bottom
     )
+    
+    static let dipsetPurple: Color = Color(red: 0.32, green: 0, blue: 1)
 }
