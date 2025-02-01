@@ -6,6 +6,7 @@
 //
 
 import Firebase
+import GoogleSignIn
 import SwiftData
 import SwiftUI
 
@@ -25,13 +26,19 @@ struct crosspostrApp: App {
             if authVM.isLoggedIn {
                 TabBarView(vM: tabVM) {
                     switch tabVM.selectedPage {
-                    case .home: Text("home")
+                    case .home:
+                        Button("Logout") {
+                            authVM.logout()
+                        }
                     case .create: Text("Create")
                     case .settings: Text("Settings")
                     }
                 }
             } else {
                 OnBoarding(vM: authVM)
+                    .onOpenURL { url in
+                        GIDSignIn.sharedInstance.handle(url)
+                    }
             }
         }
     }

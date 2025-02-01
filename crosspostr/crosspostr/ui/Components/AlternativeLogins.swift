@@ -16,6 +16,7 @@ import AuthenticationServices
 /// - Integrates `Apple` sign-in using `ASAuthorizationAppleIDProvider` for Apple login.
 
 struct AlternativeLogins: View {
+    @ObservedObject var authVM: AuthViewModel
     var body: some View {
         HStack {
             Image(.lineLeft)
@@ -25,7 +26,7 @@ struct AlternativeLogins: View {
         }
         HStack {
             SocialMediaButton(image: .google, action: {
-                
+                authVM.googleSignIn()
             })
             SocialMediaButton(image: .apple, action: {
                 

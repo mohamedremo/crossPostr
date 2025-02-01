@@ -39,3 +39,13 @@ struct CustomButton: View {
         }
     }
 }
+
+#Preview {
+    ZStack{
+        AppTheme.blueGradient.ignoresSafeArea()
+        CustomButton(title: "perfekt") {
+            //
+        }
+    }
+    
+}

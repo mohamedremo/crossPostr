@@ -75,8 +75,12 @@ class Repository: ObservableObject {
         try await authClient.signIn(withEmail: email, password: password)
     }
     
+    func logout() throws {
+        try? authClient.signOut()
+    }
+    
     func register(email: String, password: String) async throws {
         try await authClient.createUser(withEmail: email, password: password)
     }
-    
+
 }
