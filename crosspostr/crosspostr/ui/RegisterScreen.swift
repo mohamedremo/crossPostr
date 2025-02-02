@@ -90,7 +90,7 @@ struct RegisterScreen: View {
                                 }
                             )
                             .padding()
-                            AlternativeLogins()
+                            AlternativeLogins(authVM: vM)
                             Spacer()
                         }
                     }

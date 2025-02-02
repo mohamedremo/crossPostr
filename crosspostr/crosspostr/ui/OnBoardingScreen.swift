@@ -17,7 +17,7 @@ struct OnBoardingScreen: View {
                     Spacer()
                     Image(.avatarRightRead)
                         .resizable()
-                        .frame(width: uiScreen.width, height: 400, alignment: .trailing)
+                        .frame(width: uiScreen.width/2, height: 400, alignment: .trailing)
                 }
                 VStack {
                     Spacer()

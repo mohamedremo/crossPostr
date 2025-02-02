@@ -73,7 +73,7 @@ struct LoginScreen: View {
                                 }
                             )
                             .padding()
-                            AlternativeLogins()
+                            AlternativeLogins(authVM: vM)
                             Spacer()
                         }
                     }
