@@ -2,19 +2,16 @@
 //  AnimatedContainerViewModel.swift
 //  crosspostr
 //
-//  Created by Mohamed Remo on 28.01.25.
-//
+//  Created by Mohamed Remo on 02.02.25.
+
 import Foundation
 import SwiftUI
-
-
 
 class AnimatedContainerViewModel: ObservableObject {
     @Published var particles: [Particle] = []
     let particleCount = 50
     let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
-    
-    
+
     // Initialisiert Partikel zufällig
     func initializeParticles() {
         self.particles = (0..<self.particleCount).map { _ in

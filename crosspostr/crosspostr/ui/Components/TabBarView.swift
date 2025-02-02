@@ -90,6 +90,26 @@ class TabBarViewModel: ObservableObject {
     @Published var selectedPage: TabBarPage = .home
 }
 
+struct MainTabView: View {
+    @ObservedObject var tabVM: TabBarViewModel
+    @ObservedObject var authVM: AuthViewModel
+
+    var body: some View {
+        TabBarView(vM: tabVM) {
+            switch tabVM.selectedPage {
+            case .home:
+                Button("Logout") {
+                    authVM.logout()
+                }
+            case .create:
+                Text("Create")
+            case .settings:
+                Text("Settings")
+            }
+        }
+    }
+}
+
 #Preview {
     @Previewable @StateObject var vM = TabBarViewModel()
     TabBarView(vM: vM) {

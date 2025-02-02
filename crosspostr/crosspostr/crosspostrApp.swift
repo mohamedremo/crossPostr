@@ -24,22 +24,15 @@ struct crosspostrApp: App {
     var body: some Scene {
         WindowGroup {
             if authVM.isLoggedIn {
-                TabBarView(vM: tabVM) {
-                    switch tabVM.selectedPage {
-                    case .home:
-                        Button("Logout") {
-                            authVM.logout()
-                        }
-                    case .create: Text("Create")
-                    case .settings: Text("Settings")
-                    }
-                }
+                MainTabView(tabVM: tabVM, authVM: authVM)
             } else {
-                OnBoarding(vM: authVM)
-                    .onOpenURL { url in
-                        GIDSignIn.sharedInstance.handle(url)
-                    }
+                OnBoardingScreen(authVM: authVM)
+                    .onOpenURL(perform: handleOpenURL)
             }
         }
+    }
+
+    func handleOpenURL(url: URL) {
+        GIDSignIn.sharedInstance.handle(url)
     }
 }
