@@ -135,4 +135,8 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
+    
+    func restoreSession() {
+        repo.restoreSignIn()
+    }
 }

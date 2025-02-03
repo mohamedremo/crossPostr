@@ -23,12 +23,8 @@ struct crosspostrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if authVM.isLoggedIn {
-                MainTabView(tabVM: tabVM, authVM: authVM)
-            } else {
-                OnBoardingScreen(authVM: authVM)
-                    .onOpenURL(perform: handleOpenURL)
-            }
+            ContentView(authVM: authVM, tabVM: tabVM)
+                .onOpenURL(perform: handleOpenURL) /// For Google OAuth
         }
     }
 

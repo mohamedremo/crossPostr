@@ -51,16 +51,16 @@ class Repository: ObservableObject {
          - Returns: A list of `Draft` objects representing the drafts stored in the database.
          - Throws: An error if the request fails.
          */
-    func getAllDrafts() async throws -> [Draft] {
-        let data: [Draft] = try await supabaseClient.from("drafts")
-            /// Selects the Table
-            .select("*")/// Select all fields (equivalent to SQL "SELECT *")
-            .execute()
-            /// Executes the Query and returns a response of the specified type in this case -> Draft.swift
-            .value
-
-        return data
-    }
+//    func getAllDrafts() async throws -> [Draft] {
+//        let data: [Draft] = try await supabaseClient.from("drafts")
+//            /// Selects the Table
+//            .select("*")/// Select all fields (equivalent to SQL "SELECT *")
+//            .execute()
+//            /// Executes the Query and returns a response of the specified type in this case -> Draft.swift
+//            .value
+//
+//        return data
+//    }
 
     // MARK: - Firebase functions
 
@@ -95,12 +95,12 @@ class Repository: ObservableObject {
 
     /**
      Handles Google Sign-In authentication and integrates it with Firebase.
-     
+
      - Throws:
         - `AuthError.noRootViewController`: If the root view controller cannot be found.
         - `AuthError.missingIDToken`: If the Google authentication result does not contain an ID token.
         - An error from Firebase authentication if the sign-in process fails.
-     
+
      - Example usage:
         ```swift
         Task {
@@ -113,11 +113,13 @@ class Repository: ObservableObject {
         ```
      */
     func googleSignIn() async throws {
-        guard let rootViewController = Utils.shared.getRootViewController() else {
+        guard let rootViewController = Utils.shared.getRootViewController()
+        else {
             throw AuthError.noRootViewController
         }
 
-        let signInResult = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+        let signInResult = try await GIDSignIn.sharedInstance.signIn(
+            withPresenting: rootViewController)
 
         guard let idToken = signInResult.user.idToken?.tokenString else {
             throw AuthError.missingIDToken
@@ -131,7 +133,6 @@ class Repository: ObservableObject {
         // Authenticate with Firebase
         let authResult = try await authClient.signIn(with: credential)
 
-
         // Optional: Create a profile instance
         let profile = Profile(
             id: signInResult.user.userID ?? "",
@@ -140,12 +141,19 @@ class Repository: ObservableObject {
             email: signInResult.user.profile?.email ?? ""
         )
 
-        print("Google Sign-In successful. Firebase User: \(self.authClient.currentUser?.email ?? "No Email")")
+        print(
+            "Google Sign-In successful. Firebase User: \(self.authClient.currentUser?.email ?? "No Email")"
+        )
         print("New Profile \(profile) has been created.")
     }
-    
-    enum AuthError: Error {
-        case noRootViewController
-        case missingIDToken
+
+    func restoreSignIn() {
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+            guard let user = user else {
+                print("Keine authentifizierte Person gefunden")
+                return
+            }
+        }
     }
+
 }
