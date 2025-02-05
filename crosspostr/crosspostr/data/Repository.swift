@@ -11,23 +11,30 @@ import Supabase
 //  Created by Mohamed Remo on 28.01.25.
 //
 
-/// The `Repository` class provides access to the app's data layer, handling communication
-/// with the backend services. It interacts with Supabase for data storage and Firebase for
-/// authentication. The class uses the singleton pattern to ensure a single instance
-/// throughout the app.
-///
-/// - Properties:
-///    - `supabaseClient`: A reference to the `SupabaseClient` used to interact with Supabase.
-///    - `authClient`: A reference to the Firebase `Auth` client used for user authentication.
-///
-/// - Functions:
-///    - `getAllDrafts()`: Fetches all drafts stored in the Supabase database.
-///    - `login(email:password:)`: Authenticates a user via Firebase using their email and password.
-///    - `googleSignIn()`: Handles authentication via Google Sign-In and Firebase.
-///
-/// - Author: Mohamed Remo
-/// - Version: 1.0
-///
+// MARK: - Repository Class
+/**
+ The `Repository` class manages the app's data layer, handling communication
+ with Supabase for data storage and Firebase for authentication.
+ It follows the singleton pattern to ensure a single instance is used throughout the app.
+
+ ## Responsibilities:
+ - Fetches and manages draft posts from Supabase.
+ - Handles user authentication via Firebase and Google Sign-In.
+ - Ensures efficient data retrieval and state management.
+
+ ## Properties:
+ - `supabaseClient`: Interface for interacting with Supabase.
+ - `authClient`: Firebase authentication client.
+
+ ## Functions:
+ - `getAllDrafts()`: Retrieves all stored drafts from Supabase.
+ - `login(email:password:)`: Authenticates a user via Firebase with email and password.
+ - `googleSignIn()`: Handles authentication via Google Sign-In and Firebase.
+
+ ## Author:
+ - Mohamed Remo
+ - Version: 1.0
+ */
 @MainActor
 class Repository: ObservableObject {
     // MARK: - shared instances
