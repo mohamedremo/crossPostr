@@ -1,5 +1,5 @@
 //
-//  Draft.swift
+//  Post.swift
 //  crosspostr
 //
 //  Created by Mohamed Remo on 28.01.25.
@@ -108,7 +108,7 @@ enum MediaType: String, Codable {
 // MARK: - Supported Platforms
 /// Defines the supported social media platforms.
 enum Platform: String, Codable {
-    case twitter, facebook, instagram, linkedin, tiktok, youtube
+    case twitter, facebook, instagram, linkedin, tiktok, youtube, snapchat
 
     /// Returns the default metadata for each platform.
     var metadata: PlatformMetadata {
@@ -125,6 +125,8 @@ enum Platform: String, Codable {
             return PlatformMetadata(postId: nil, maxMediaCount: 1, maxCharacters: 2200, allowedMediaTypes: [.video])
         case .youtube:
             return PlatformMetadata(postId: nil, maxMediaCount: 1, maxCharacters: 5000, allowedMediaTypes: [.video])
+        case .snapchat:
+            return PlatformMetadata(postId: nil, maxMediaCount: 4, maxCharacters: 280, allowedMediaTypes: [.image, .video, .gif])
         }
     }
 }

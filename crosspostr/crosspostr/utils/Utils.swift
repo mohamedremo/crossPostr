@@ -14,7 +14,7 @@ class Utils {
     // MARK: - UI Helpers
     
     /**
-     Retrieves the root view controller of the application to present authentication flows.
+     Retrieves the root view controller of the application to present authentication flows with GoogleSignIn.
      
      - Returns: The currently visible `UIViewController`.
      */
@@ -44,4 +44,6 @@ class Utils {
         }
         return vc
     }
+    
+    
 }
