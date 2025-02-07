@@ -23,6 +23,7 @@ struct OnBoardingScreen: View {
                     Spacer()
                     InfoBox()
                         .padding(.bottom, 300)
+                    
                     CustomNavigationButton(
                         title: "Login",
                         destination: {
@@ -37,13 +38,6 @@ struct OnBoardingScreen: View {
                             LoginScreen(vM: authVM)
                         }
                     )
-
-                    HStack {
-                        Image(.lineLeft)
-                        Text("or login with")
-                            .font(.footnote)
-                        Image(.lineRight)
-                    }
                     AlternativeLogins(authVM: authVM)
                     Spacer()
                 }
