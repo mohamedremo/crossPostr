@@ -1,9 +1,3 @@
-//
-//  ContentView.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 02.02.25.
-//
 import SwiftUI
 import GoogleSignIn
 import Foundation
@@ -11,10 +5,11 @@ import Foundation
 struct ContentView: View {
     @ObservedObject var authVM: AuthViewModel = AuthViewModel()
     @ObservedObject var tabVM: TabBarViewModel = TabBarViewModel()
+    @ObservedObject var postVM: PostViewModel = PostViewModel()
     
     var body: some View {
         if authVM.isLoggedIn {
-            MainTabView(tabVM: tabVM, authVM: authVM)
+            MainTabView(tabVM: tabVM, authVM: authVM, postVM: postVM)
         } else {
             OnBoardingScreen(authVM: authVM)
         }

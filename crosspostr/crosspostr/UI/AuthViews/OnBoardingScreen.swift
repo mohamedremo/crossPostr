@@ -1,9 +1,3 @@
-//
-//  OnBoardingScreen.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 22.01.25.
-//
 import SwiftUI
 
 struct OnBoardingScreen: View {

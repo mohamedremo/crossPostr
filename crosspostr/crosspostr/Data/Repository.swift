@@ -1,9 +1,3 @@
-import Firebase
-import FirebaseAuth
-import Foundation
-import GoogleSignIn
-import Supabase
-
 //
 //  Repository.swift
 //  crosspostr
@@ -35,6 +29,12 @@ import Supabase
  - Mohamed Remo
  - Version: 1.0
  */
+import Firebase
+import FirebaseAuth
+import Foundation
+import GoogleSignIn
+import Supabase
+
 @MainActor
 class Repository: ObservableObject {
     // MARK: - shared instances
@@ -99,7 +99,9 @@ class Repository: ObservableObject {
     }
 
     // MARK:  Google OAuth Sign-In
-
+    
+    
+    
     /**
      Handles Google Sign-In authentication and integrates it with Firebase.
 
@@ -107,6 +109,7 @@ class Repository: ObservableObject {
         - `AuthError.noRootViewController`: If the root view controller cannot be found.
         - `AuthError.missingIDToken`: If the Google authentication result does not contain an ID token.
         - An error from Firebase authentication if the sign-in process fails.
+     
 
      - Example usage:
         ```swift
@@ -119,6 +122,13 @@ class Repository: ObservableObject {
         }
         ```
      */
+    
+#warning("AuthError enum needs to be moved from here")
+    enum AuthError: Error {
+        case noRootViewController
+        case missingIDToken
+    }
+
     func googleSignIn() async throws {
         guard let rootViewController = Utils.shared.getRootViewController()
         else {
@@ -162,5 +172,4 @@ class Repository: ObservableObject {
             }
         }
     }
-
 }

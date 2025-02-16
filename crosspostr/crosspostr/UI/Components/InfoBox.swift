@@ -1,20 +1,11 @@
-//
-//  InfoBox.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 28.01.25.
-//
 import SwiftUI
 
 struct InfoBox: View {
-    @State var gradient: LinearGradient = LinearGradient(
-        colors: [.purple, .gray], startPoint: .bottomTrailing,
-        endPoint: .leading)
     
     @State var description: String = "Deine Storys. Überall."
     var body: some View {
         ZStack {
-            gradient  // HINTERGRUND
+            AppTheme.blueGradient
             HStack {
                 VStack {
                     Spacer()

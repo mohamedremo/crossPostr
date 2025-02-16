@@ -1,10 +1,3 @@
-//
-//  Post.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 28.01.25.
-//
-
 import Foundation
 
 // MARK: - Overview
@@ -107,8 +100,8 @@ enum MediaType: String, Codable {
 
 // MARK: - Supported Platforms
 /// Defines the supported social media platforms.
-enum Platform: String, Codable {
-    case twitter, facebook, instagram, linkedin, tiktok, youtube, snapchat
+enum Platform: String, Codable, CaseIterable {
+    case twitter, facebook, instagram, linkedin, tiktok, youtube, snapchat, threads
 
     /// Returns the default metadata for each platform.
     var metadata: PlatformMetadata {
@@ -127,6 +120,18 @@ enum Platform: String, Codable {
             return PlatformMetadata(postId: nil, maxMediaCount: 1, maxCharacters: 5000, allowedMediaTypes: [.video])
         case .snapchat:
             return PlatformMetadata(postId: nil, maxMediaCount: 4, maxCharacters: 280, allowedMediaTypes: [.image, .video, .gif])
+        case .threads:
+            return PlatformMetadata(postId: nil, maxMediaCount: 10, maxCharacters: 500, allowedMediaTypes: [.image, .video, .gif])
+        }
+    }
+    
+    /// Returns a Bool if post is supported for each platform
+    var isSupported: Bool {
+        switch self {
+        case .facebook, .instagram, .tiktok, .twitter, .youtube:
+            return true
+        case .snapchat, .threads, .linkedin:
+            return false
         }
     }
 }

@@ -21,7 +21,7 @@ struct AnimatedContainerView<Content: View>: View {
     var blur: CGFloat
     
     init(
-        blur: CGFloat = 3,
+        blur: CGFloat = 6,
         @ViewBuilder content: @escaping () -> Content
     ){
         self.blur = blur

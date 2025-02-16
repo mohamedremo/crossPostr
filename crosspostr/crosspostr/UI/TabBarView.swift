@@ -1,10 +1,4 @@
 import Foundation
-//
-//  TabBarView.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 28.01.25.
-//
 import SwiftUI
 
 enum TabBarPage: CaseIterable, Identifiable {
@@ -45,7 +39,11 @@ struct TabBarView<Content: View>: View {
 
     var body: some View {
         VStack {
-            content()
+            ZStack {
+                AppTheme.blueGradient.ignoresSafeArea() ///App-Hintergrund
+                FloatingParticlesView()
+                content()
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .bottom) {
@@ -88,26 +86,6 @@ struct TabButton: View {
 
 class TabBarViewModel: ObservableObject {
     @Published var selectedPage: TabBarPage = .home
-}
-
-struct MainTabView: View {
-    @ObservedObject var tabVM: TabBarViewModel
-    @ObservedObject var authVM: AuthViewModel
-
-    var body: some View {
-        TabBarView(vM: tabVM) {
-            switch tabVM.selectedPage {
-            case .home:
-                Button("Logout") {
-                    authVM.logout()
-                }
-            case .create:
-                Text("Create")
-            case .settings:
-                Text("Settings")
-            }
-        }
-    }
 }
 
 #Preview {

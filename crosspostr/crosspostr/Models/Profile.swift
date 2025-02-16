@@ -1,9 +1,3 @@
-//
-//  Profile.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 01.02.25.
-//
 import Foundation
 import SwiftData
 
