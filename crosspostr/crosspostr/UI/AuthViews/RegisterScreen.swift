@@ -1,9 +1,3 @@
-//
-//  Untitled.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 29.01.25.
-//
 import SwiftUI
 
 struct RegisterScreen: View {

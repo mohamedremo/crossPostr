@@ -1,9 +1,3 @@
-//
-//  CustomNavigationButton.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 02.02.25.
-//
 import SwiftUI
 
 struct CustomNavigationButton<Content: View>: View {

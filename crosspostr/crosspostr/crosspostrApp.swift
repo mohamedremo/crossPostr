@@ -1,10 +1,3 @@
-//
-//  crosspostrApp.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 20.01.25.
-//
-
 import Firebase
 import GoogleSignIn
 import SwiftData
@@ -14,6 +7,7 @@ import SwiftUI
 struct crosspostrApp: App {
     @StateObject var authVM: AuthViewModel = AuthViewModel()
     @StateObject var tabVM: TabBarViewModel = TabBarViewModel()
+    @StateObject var postVM: PostViewModel = PostViewModel()
 
     // MARK: - FIREBASE - Initialisierung
     init() {
@@ -24,7 +18,7 @@ struct crosspostrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(authVM: authVM, tabVM: tabVM)
+            ContentView(authVM: authVM, tabVM: tabVM, postVM: postVM)
                 .onOpenURL(perform: handleOpenURL) /// For Google OAuth
         }
     }

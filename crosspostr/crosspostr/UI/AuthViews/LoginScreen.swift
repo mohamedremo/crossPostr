@@ -1,10 +1,3 @@
-import Lottie
-//
-//  LoginScreen.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 25.01.25.
-//
 import SwiftUI
 
 struct LoginScreen: View {

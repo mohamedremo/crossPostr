@@ -1,9 +1,3 @@
-//
-//  Utils.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 02.02.25.
-//
 import SwiftUI
 
 class Utils {
@@ -45,5 +39,8 @@ class Utils {
         return vc
     }
     
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
     
 }

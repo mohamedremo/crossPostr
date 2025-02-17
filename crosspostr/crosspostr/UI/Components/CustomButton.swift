@@ -1,9 +1,3 @@
-//
-//  CustomButton.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 28.01.25.
-//
 import SwiftUI
 
 
@@ -44,7 +38,6 @@ struct CustomButton: View {
     ZStack{
         AppTheme.blueGradient.ignoresSafeArea()
         CustomButton(title: "perfekt") {
-            //
         }
     }
     
