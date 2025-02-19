@@ -1,6 +1,6 @@
+import FirebaseAuth
 import Foundation
 import Supabase
-import FirebaseAuth
 
 /**
  The `BackendClient` class provides a singleton instance that manages interactions
@@ -16,17 +16,18 @@ import FirebaseAuth
  */
 
 struct BackendClient {
-    /// The singleton instance of the `BackendClient`.
     static let shared: BackendClient = BackendClient()
-    
-    private init() {} /// ensures singleton
-    
+    /// The singleton instance of the `BackendClient`.
+
+    private init() {}
+    /// ensures singleton
+
     // MARK: - Supabase
     /// The `SupabaseClient` instance to interact with Supabase backend services.
     let supabase = SupabaseClient(
         supabaseURL: URL(string: apiHost.supabase.rawValue)!,
         supabaseKey: apiKey.supabase.rawValue)
-    
+
     // MARK: - Firebase
     /// The `Auth` instance from Firebase used for user authentication.
     let auth = Auth.auth()

@@ -2,27 +2,30 @@ import SwiftUI
 
 class Utils {
     static let shared: Utils = Utils()
-    
+
     private init() {}
-    
+
     // MARK: - UI Helpers
-    
+
     /**
      Retrieves the root view controller of the application to present authentication flows with GoogleSignIn.
-     
+
      - Returns: The currently visible `UIViewController`.
      */
     func getRootViewController() -> UIViewController? {
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = scene.windows.first?.rootViewController else {
+        guard
+            let scene = UIApplication.shared.connectedScenes.first
+                as? UIWindowScene,
+            let rootViewController = scene.windows.first?.rootViewController
+        else {
             return nil
         }
         return getVisibleViewController(from: rootViewController)
     }
-    
+
     /**
      Recursively finds the top-most presented view controller.
-     
+
      - Parameter vc: The root `UIViewController` to start searching from.
      - Returns: The currently presented `UIViewController`.
      */
@@ -38,9 +41,19 @@ class Utils {
         }
         return vc
     }
-    
+
     func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder), to: nil, from: nil,
+            for: nil)
     }
-    
+
+    func loadUIImage(from path: String) -> UIImage? {
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: path))
+            return UIImage(data: data)
+        } catch {
+            return nil
+        }
+    }
 }

@@ -34,43 +34,22 @@ import FirebaseAuth
 import Foundation
 import GoogleSignIn
 import Supabase
+import SwiftData
 
 @MainActor
-class Repository: ObservableObject {
+class Repository {
     // MARK: - shared instances
 
     static let shared: Repository = Repository()
+    let remoteRepository: RemoteRepository = RemoteRepository()
+    let localRepository: LocalRepository = LocalRepository()
 
     private init() {}
-    /// Singleton
 
-    private let supabaseClient = BackendClient.shared.supabase
-    /// Supabase
-
-    private let authClient = BackendClient.shared.auth
-    /// Firebase Auth
-
-    // MARK: - Supabase functions
-
-    /**
-         Fetches all drafts from the Supabase database.
-
-         - Returns: A list of `Draft` objects representing the drafts stored in the database.
-         - Throws: An error if the request fails.
-         */
-//    func getAllDrafts() async throws -> [Draft] {
-//        let data: [Draft] = try await supabaseClient.from("drafts")
-//            /// Selects the Table
-//            .select("*")/// Select all fields (equivalent to SQL "SELECT *")
-//            .execute()
-//            /// Executes the Query and returns a response of the specified type in this case -> Draft.swift
-//            .value
-//
-//        return data
-//    }
-
+    
     // MARK: - Firebase functions
-
+    private let authClient = BackendClient.shared.auth
+    
     var currentUser: FirebaseAuth.User? {
         return authClient.currentUser
     }
@@ -99,9 +78,7 @@ class Repository: ObservableObject {
     }
 
     // MARK:  Google OAuth Sign-In
-    
-    
-    
+
     /**
      Handles Google Sign-In authentication and integrates it with Firebase.
 
@@ -109,7 +86,7 @@ class Repository: ObservableObject {
         - `AuthError.noRootViewController`: If the root view controller cannot be found.
         - `AuthError.missingIDToken`: If the Google authentication result does not contain an ID token.
         - An error from Firebase authentication if the sign-in process fails.
-     
+
 
      - Example usage:
         ```swift
@@ -122,8 +99,6 @@ class Repository: ObservableObject {
         }
         ```
      */
-    
-#warning("AuthError enum needs to be moved from here")
     enum AuthError: Error {
         case noRootViewController
         case missingIDToken
@@ -152,10 +127,12 @@ class Repository: ObservableObject {
 
         // Optional: Create a profile instance
         let profile = Profile(
-            id: signInResult.user.userID ?? "",
-            firstName: signInResult.user.profile?.givenName ?? "",
-            fullName: signInResult.user.profile?.name ?? "",
-            email: signInResult.user.profile?.email ?? ""
+            id: signInResult.user.userID ?? UUID().uuidString,
+            firstName: signInResult.user.profile?.givenName ?? "Unknown",
+            fullName: signInResult.user.profile?.name ?? "Unknown",
+            email: signInResult.user.profile?.email ?? "no-email@example.com",
+            birthDate: nil,
+            profileImageUrl: nil
         )
 
         print(
@@ -166,7 +143,7 @@ class Repository: ObservableObject {
 
     func restoreSignIn() {
         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
-            guard let user = user else {
+            guard error == nil else {
                 print("Keine authentifizierte Person gefunden")
                 return
             }
