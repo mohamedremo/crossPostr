@@ -41,9 +41,6 @@ struct AppTheme {
         )
     
     static let cardTextColor: Color = Color(red: 0.7, green: 0.47, blue: 0.87).opacity(0.8)
-    
-
-
 }
 
 

@@ -36,7 +36,6 @@ struct DashboardView: View {
                     DashboardCard(post: post)
                         .swipeActions {
                             Button(role: .destructive) {
-                                print("Swipe action triggered for post \(post.id)")
                                 if let index = viewModel.posts.firstIndex(where: {
                                     $0.id == post.id
                                 }) {

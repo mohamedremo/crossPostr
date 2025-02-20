@@ -7,8 +7,9 @@ import SwiftUI
 struct crosspostrApp: App {
     @StateObject var authVM: AuthViewModel = AuthViewModel()
     @StateObject var tabVM: TabBarViewModel = TabBarViewModel()
-    @StateObject var postVM: PostViewModel = PostViewModel()
+    @StateObject var postVM: CreateViewModel = CreateViewModel()
     @StateObject var dashVM: DashboardViewModel = DashboardViewModel()
+    @StateObject var dashDetailVM: DashboardDetailViewModel = DashboardDetailViewModel()
 
     // MARK: - FIREBASE - Initialisierung
     init() {
@@ -23,7 +24,8 @@ struct crosspostrApp: App {
                 authVM: authVM,
                 tabVM: tabVM,
                 postVM: postVM,
-                dashVM: dashVM
+                dashVM: dashVM,
+                dashDetailVM: dashDetailVM
             )
             .onOpenURL(perform: handleOpenURL) /// For Google OAuth
             .task {

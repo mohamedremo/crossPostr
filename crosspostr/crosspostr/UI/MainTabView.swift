@@ -4,8 +4,9 @@ import SwiftUI
 struct MainTabView: View {
     @ObservedObject var tabVM: TabBarViewModel
     @ObservedObject var authVM: AuthViewModel
-    @ObservedObject var postVM: PostViewModel
+    @ObservedObject var postVM: CreateViewModel
     @ObservedObject var dashVM: DashboardViewModel
+    @ObservedObject var dashDetailVM: DashboardDetailViewModel
 
     var body: some View {
         TabBarView(vM: tabVM) {
@@ -15,7 +16,7 @@ struct MainTabView: View {
             case .create:
                 CreateView(viewModel: postVM)
             case .settings:
-                Text("Settings")
+                DashboardDetailView(vM: dashDetailVM)
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)

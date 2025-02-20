@@ -17,6 +17,13 @@ struct MediaDTO: Codable {
         case id, url, type, uploadedAt
     }
     
+    init(id: UUID, devicePath: String, url: String, type: MediaType, uploadedAt: Date) {
+        self.id = id
+        self.url = url
+        self.devicePath = devicePath
+        self.type = type
+        self.uploadedAt = uploadedAt
+    }
     //json decoder for enum handle
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -28,12 +35,13 @@ struct MediaDTO: Codable {
         type = MediaType(from: typeString) ?? .image // Fallback auf `.image`
     }
     
-    init(media: Media) {
+    
+    init(from media: Media) {
         self.id = media.id
         self.devicePath = media.localPath
         self.url = media.remoteURL ?? ""
         self.type = media.type
-        self.uploadedAt = media.uploadedAt ?? Date()
+        self.uploadedAt = media.createdAt ?? Date()
     }
 }
 extension MediaDTO {
