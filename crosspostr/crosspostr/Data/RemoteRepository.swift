@@ -13,21 +13,21 @@ class RemoteRepository {
 
     func getAllPostsRemote() async throws -> [PostDTO] {
         guard let currentUser = authClient.currentUser else {
+            print("No User logged in")
             return []
         }
         let data: [PostDTO] = try await supabaseClient.from("posts")
             /// Selects the Table
             .select("*")/// Select all fields (equivalent to SQL "SELECT *")
             .eq("userId", value: currentUser.uid)
-            .execute()
-            /// Executes the Query and returns a response of the specified type in this case -> Draft.swift
+            .execute() /// Executes the Query and returns a response of the specified type in this case -> PostDTO.swift
             .value
         print("getAllPosts() ->", data)
 
         return data
     }
 
-    func getPostRemote(id: Int) async throws -> PostDTO {
+    func getPostRemote(id: UUID) async throws -> PostDTO {
         let data: PostDTO = try await supabaseClient.from("posts")
             .select("*")
             .eq("id", value: id)

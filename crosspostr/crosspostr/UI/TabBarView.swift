@@ -59,6 +59,12 @@ struct TabBarView<Content: View>: View {
             .padding(.horizontal)
             .padding(.bottom, 1)
             .shadow(color: .black.opacity(0.2), radius: 5, y: 5)
+            .background {
+                Color.white
+                    .opacity(0.8)
+                    .ignoresSafeArea()
+                    .blur(radius: 10)
+            }
         }
     }
 }
@@ -89,10 +95,12 @@ class TabBarViewModel: ObservableObject {
 }
 
 #Preview {
+    @Previewable @StateObject var dashboardVM = DashboardViewModel()
+    @Previewable @StateObject var authVM = AuthViewModel()
     @Previewable @StateObject var vM = TabBarViewModel()
     TabBarView(vM: vM) {
         switch vM.selectedPage {
-        case .home: Text("home")
+        case .home: DashboardView(viewModel: dashboardVM, authVM: authVM)
         case .create: Text("Create")
         case .settings: Text("Settings")
         }

@@ -19,10 +19,11 @@ struct crosspostrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(authVM: authVM,
-                        tabVM: tabVM,
-                        postVM: postVM,
-                        dashVM: dashVM
+            ContentView(
+                authVM: authVM,
+                tabVM: tabVM,
+                postVM: postVM,
+                dashVM: dashVM
             )
             .onOpenURL(perform: handleOpenURL) /// For Google OAuth
             .task {

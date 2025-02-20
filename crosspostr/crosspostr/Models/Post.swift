@@ -6,18 +6,18 @@ class Post: Identifiable {
     @Attribute(.unique) var id: UUID /// Sorgt für eine Einzigartige vergabe von ID'S somit wenn insert schon vorhanden --> Update
     var content: String
     var createdAt: Date
-    var mediaIds: [UUID]
+    var mediaId: UUID?
     var metadata: String
     var platforms: String
     var scheduledAt: Date
     var status: String
     var userId: String
     
-    init(content: String, createdAt: Date, id: UUID = UUID(), mediaIds: [UUID] = [], metadata: String, platforms: String, scheduledAt: Date, status: String, userId: String) {
+    init(content: String, createdAt: Date, id: UUID = UUID(), mediaId: UUID = UUID(), metadata: String, platforms: String, scheduledAt: Date, status: String, userId: String) {
         self.id = id
         self.content = content
         self.createdAt = createdAt
-        self.mediaIds = mediaIds
+        self.mediaId = mediaId
         self.metadata = metadata
         self.platforms = platforms
         self.scheduledAt = scheduledAt
@@ -186,7 +186,7 @@ extension Post {
             content: self.content,
             createdAt: self.createdAt,
             id: self.id,
-            mediaIds: self.mediaIds,
+            mediaId: self.mediaId ?? UUID(),
             metadata: self.metadata,
             platforms: self.platforms,
             scheduledAt: self.scheduledAt,
@@ -195,7 +195,6 @@ extension Post {
         )
     }
 }
-
 
 enum PostStatus: String, Codable {
     case scheduled, published, failed
