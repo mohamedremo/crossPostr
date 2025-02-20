@@ -1,5 +1,6 @@
 import AVKit
 import PhotosUI
+import SwiftData
 import SwiftUI
 
 // MARK: - Views
@@ -19,6 +20,7 @@ struct CreateView: View {
 
             DescriptionTextField(text: $viewModel.postText)
 
+            //  Medienauswahl
             PhotosPicker(
                 selection: $viewModel.selectedMedia,
                 maxSelectionCount: 10,
@@ -29,27 +31,27 @@ struct CreateView: View {
             .photosPickerStyle(.presentation)
             .onChange(of: viewModel.selectedMedia) { _, _ in
                 Task {
-                    await viewModel.loadSelectedMedia()
+                    //Hier Medien Lokal speichern
                 }
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    // Anzeige der Bilder
+                    // 🔹 Bilder aus `mediaIds`
                     ForEach(viewModel.images, id: \.self) { image in
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFit()
                             .frame(maxWidth: screen.width / 2, maxHeight: 200)
                             .cornerRadius(12)
-                            .transition(.move(edge: .leading)) 
+                            .transition(.move(edge: .leading))
                             .animation(
-                                .easeInOut, value: viewModel.videoURLs
+                                .easeInOut, value: viewModel.images
                             )
                             .overlay(alignment: .topTrailing) {
                                 Button {
-                                    withAnimation{
-                                        viewModel.deleteImage(image: image)
+                                    withAnimation {
+//                                        viewModel.deleteImage(image: image)
                                     }
                                 } label: {
                                     Image(systemName: "xmark.circle.fill")
@@ -59,7 +61,7 @@ struct CreateView: View {
                             }
                     }
 
-                    // Anzeige der Videos
+                    // 🔹 Videos aus `mediaIds`
                     ForEach(viewModel.videoURLs, id: \.self) { url in
                         if let player = viewModel.videoPlayers[url] {
                             CustomVideoPlayer(player: player)
@@ -72,7 +74,7 @@ struct CreateView: View {
                                 .overlay(alignment: .topTrailing) {
                                     Button {
                                         withAnimation {
-                                            viewModel.deleteVideo(url: url)
+                                            //viewModel.deleteVideo(url: url)
                                         }
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
@@ -86,7 +88,9 @@ struct CreateView: View {
             }
 
             Button("Posten") {
-                // Hier Logik zum Posten
+                Task {
+                    //await viewModel.createPost()  //Post erstellen & hochladen
+                }
             }
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isUploading)
@@ -94,7 +98,20 @@ struct CreateView: View {
             if viewModel.isUploading {
                 ProgressView()
             }
+
             Spacer()
+        }
+        .alert(
+            viewModel.errorMessage, isPresented: $viewModel.showAlert,
+            actions: {
+                Button("Ok") {
+                    viewModel.showAlert.toggle()
+                }
+            }
+        )
+        .task {
+            //            viewModel.getImages()
+            //            viewModel.getVideoURLs()
         }
         .padding()
         .onTapGesture {
@@ -103,6 +120,7 @@ struct CreateView: View {
     }
 }
 
+// MARK: - Plattform-Auswahl
 struct PlatformSelectionView: View {
     @ObservedObject var viewModel: PostViewModel
     var body: some View {
@@ -111,10 +129,7 @@ struct PlatformSelectionView: View {
                 .font(.headline)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
-                    ForEach(
-                        Platform.allCases.filter { $0.isSupported },
-                        id: \.self
-                    ) { platform in
+                    ForEach(Platform.allCases, id: \.self) { platform in
                         Button(action: {
                             viewModel.togglePlatformSelection(platform)
                         }) {
@@ -122,8 +137,7 @@ struct PlatformSelectionView: View {
                                 .padding()
                                 .background(
                                     viewModel.selectedPlatforms.contains(
-                                        platform)
-                                        ? Color.purple : Color.gray
+                                        platform) ? Color.purple : Color.gray
                                 )
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
@@ -135,9 +149,9 @@ struct PlatformSelectionView: View {
     }
 }
 
-
-
-#Preview {
-    @StateObject @Previewable var viewModel: PostViewModel = PostViewModel()
-    CreateView(viewModel: viewModel)
-}
+// MARK: - Vorschau für Xcode-Previews
+//#Preview {
+//    @Previewable var previewContext = PreviewModelContainer.shared.mainContext
+//    @Previewable @StateObject var previewViewModel = PostViewModel()
+//    CreateView(viewModel: previewViewModel)
+//}

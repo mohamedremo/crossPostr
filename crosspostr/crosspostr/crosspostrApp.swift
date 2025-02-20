@@ -8,6 +8,7 @@ struct crosspostrApp: App {
     @StateObject var authVM: AuthViewModel = AuthViewModel()
     @StateObject var tabVM: TabBarViewModel = TabBarViewModel()
     @StateObject var postVM: PostViewModel = PostViewModel()
+    @StateObject var dashVM: DashboardViewModel = DashboardViewModel()
 
     // MARK: - FIREBASE - Initialisierung
     init() {
@@ -18,8 +19,16 @@ struct crosspostrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(authVM: authVM, tabVM: tabVM, postVM: postVM)
-                .onOpenURL(perform: handleOpenURL) /// For Google OAuth
+            ContentView(
+                authVM: authVM,
+                tabVM: tabVM,
+                postVM: postVM,
+                dashVM: dashVM
+            )
+            .onOpenURL(perform: handleOpenURL) /// For Google OAuth
+            .task {
+                await dashVM.fetchAllRemotes() // Start
+            }
         }
     }
     
