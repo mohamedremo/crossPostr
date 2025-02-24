@@ -35,11 +35,12 @@ import Foundation
 import GoogleSignIn
 import Supabase
 import SwiftData
+import SwiftUI
 
 @MainActor
 class Repository {
     // MARK: - shared instances
-
+    
     static let shared: Repository = Repository()
     private let authClient = BackendClient.shared.auth
     let remoteRepository: RemoteRepository = RemoteRepository()
@@ -55,6 +56,8 @@ class Repository {
     var currentUser: FirebaseAuth.User? {
         return authClient.currentUser
     }
+    
+    var mainProfile: Profile? = nil
 
     /**
         Logs in a user using their email and password through Firebase Auth.
@@ -141,6 +144,8 @@ class Repository {
             birthDate: nil,
             profileImageUrl: nil
         )
+    
+        
 
         print(
             "Google Sign-In successful. Firebase User: \(self.authClient.currentUser?.email ?? "No Email")"

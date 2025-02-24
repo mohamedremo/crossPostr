@@ -96,7 +96,7 @@ class CreateViewModel: ObservableObject {
         images.removeAll(where: { $0 == image })
     }
     
-    func uploadPostToSupabase() {
+    func uploadPostToSupabase() async {
         
         guard let currentUser = repo.currentUser else {
             print("No current user logged in")
@@ -110,14 +110,15 @@ class CreateViewModel: ObservableObject {
         do {
             for image in images {
                 let imageUrl = try repo.localRepository.storeImageInCache(image, id: newMediaId)
-                medias.append(MediaDTO(
+                let newImage = MediaDTO(
                     id: newMediaId,
                     devicePath: imageUrl.absoluteString,
                     url: "",
                     type: .image,
                     uploadedAt: Date.now
                     )
-                )
+                medias.append(newImage)
+                try await repo.remoteRepository.insertMediaRemote(newMedia: newImage)
             }
         } catch {
             print(error.localizedDescription)
@@ -126,14 +127,17 @@ class CreateViewModel: ObservableObject {
         do {
             for video in videoURLs {
                 let videoURL = try repo.localRepository.storeVideoInCache(video, id: newMediaId)
-                medias.append(MediaDTO(
+                let newVideo = MediaDTO(
                     id: newMediaId,
                     devicePath: videoURL.absoluteString,
                     url: "",
                     type: .video,
                     uploadedAt: Date.now
                     )
-                )
+                medias.append(newVideo)
+                isUploading = true
+                try await repo.remoteRepository.insertMediaRemote(newMedia: newVideo)
+                isUploading = false
             }
         } catch {
             print(error.localizedDescription)
@@ -162,6 +166,18 @@ class CreateViewModel: ObservableObject {
         isUploading = false
         clear()
     }
+    
+    func uploadMediaToSupabaseStorage(media: MediaDTO, data: Data) async {
+        do {
+            guard let uid = repo.currentUser?.uid else { return }
+            
+            try await repo.remoteRepository.uploadFile(bucket: "media-files", path: "\(uid)/", fileData: data)
+            try await repo.remoteRepository.insertMediaRemote(newMedia: media)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
     
     private func clear() {
         postText = ""

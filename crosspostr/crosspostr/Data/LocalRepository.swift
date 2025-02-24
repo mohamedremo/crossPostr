@@ -127,7 +127,7 @@ class LocalRepository {
         print("Created new Folder in Cache for Media with ID \(id.uuidString)")
         return folderURL
     }
-    
+
     // Basisfunktion, die alle Dateien im Ordner zurückgibt
     private func allFiles(inFolderWith id: UUID) throws -> [URL] {
         let folderURL = try createFolder(with: id)
@@ -135,19 +135,16 @@ class LocalRepository {
         return fileURLs
     }
 
-    // Filterfunktion für Bilder
     private func getImageFiles(inFolderWith id: UUID) throws -> [URL] {
         let allFiles = try allFiles(inFolderWith: id)
         return allFiles.filter { $0.pathExtension.lowercased() == "jpg" }
     }
 
-    // Filterfunktion für Videos
     private func getVideoFiles(inFolderWith id: UUID) throws -> [URL] {
         let allFiles = try allFiles(inFolderWith: id)
         return allFiles.filter { $0.pathExtension.lowercased() == "mp4" }
     }
 
-    // Falls du alle Dateien (Bilder + Videos) zusammen haben möchtest:
     func getFiles(inFolderWith id: UUID) throws -> [URL] {
         return try allFiles(inFolderWith: id)
     }
@@ -208,9 +205,8 @@ class LocalRepository {
             setErrorMessage("Fehler beim Hochladen der Medien: \(error.localizedDescription)")
         }
     }
-    
-    // Funktion für den Upload von Bildern (wie bereits in deinem Code)
-    func uploadImageToSupabase(mediaDTO: MediaDTO, imageData: Data) async -> String? {
+
+    private func uploadImageToSupabase(mediaDTO: MediaDTO, imageData: Data) async -> String? {
         let supabaseURL = apiHost.supabase
         let supabaseKey = apiKey.supabase
         let bucketName = "media-files"
@@ -242,8 +238,7 @@ class LocalRepository {
         }
     }
 
-    // Funktion für den Upload von Videos
-    func uploadVideoToSupabase(mediaDTO: MediaDTO, videoData: Data) async -> String? {
+    private func uploadVideoToSupabase(mediaDTO: MediaDTO, videoData: Data) async -> String? {
         let supabaseURL = apiHost.supabase
         let supabaseKey = apiKey.supabase
         let bucketName = "media-files"

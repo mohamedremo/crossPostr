@@ -1,5 +1,5 @@
 {
-  "originHash" : "db87a0a19d81dd60ddcafc3852aee9464b80c6db8559d51c42e5081cc8829801",
+  "originHash" : "b229a9a1785c24581b16f25b9e16aafd08880668d853e2d3310cf0502cc5eafd",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -143,6 +143,15 @@
       "state" : {
         "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
         "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "snap-kit-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Snapchat/snap-kit-spm",
+      "state" : {
+        "revision" : "6c44e89e330e8b37ea3f7405d75c9a161d4f8281",
+        "version" : "2.5.0"
       }
     },
     {

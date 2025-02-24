@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>GIDClientID</key>
-    <string>419296855119-jj4nmfpllqvnvbq9mgm5lbvkp5s4isld.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -12,6 +10,30 @@
 				<string>com.googleusercontent.apps.419296855119-jj4nmfpllqvnvbq9mgm5lbvkp5s4isld</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb501664873040786</string>
+			</array>
+		</dict>
+		<dict/>
+	</array>
+	<key>GIDClientID</key>
+	<string>419296855119-jj4nmfpllqvnvbq9mgm5lbvkp5s4isld.apps.googleusercontent.com</string>
+	<key>SCSDKClientId</key>
+	<string>38ecc4f7-e735-4ae5-9dd7-415161f554e1</string>
+	<key>SCSDKRedirectUrl</key>
+	<string>snapkit-38ecc4f7-e735-4ae5-9dd7-415161f554e1://auth</string>
+	<key>SCSDKScopes</key>
+	<array>
+		<string>https://auth.snapchat.com/oauth2/api/user.display_name</string>
+		<string>https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar</string>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>snapchat</string>
 	</array>
 </dict>
 </plist>

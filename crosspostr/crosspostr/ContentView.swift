@@ -7,7 +7,8 @@ struct ContentView: View {
     @ObservedObject var tabVM: TabBarViewModel
     @ObservedObject var postVM: CreateViewModel
     @ObservedObject var dashVM: DashboardViewModel
-    @ObservedObject var dashDetailVM: DashboardDetailViewModel
+    @ObservedObject var createVM: CreateViewModel
+    @EnvironmentObject var errorManager: ErrorManager
     
     var body: some View {
         if authVM.isLoggedIn {
@@ -16,10 +17,12 @@ struct ContentView: View {
                 authVM: authVM,
                 postVM: postVM,
                 dashVM: dashVM,
-                dashDetailVM: dashDetailVM
+                createVM: createVM
             )
+            .environmentObject(errorManager)
         } else {
-            OnBoardingScreen(authVM: authVM)
+            WelcomeScreen(authVM: authVM)
+                .environmentObject(errorManager)
         }
     }
 }

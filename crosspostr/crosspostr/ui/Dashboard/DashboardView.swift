@@ -9,54 +9,73 @@ import SwiftUI
 struct DashboardView: View {
     @ObservedObject var viewModel: DashboardViewModel
     @ObservedObject var authVM: AuthViewModel
-    @State var postNr = 0
-    var body: some View {
-        VStack {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text("Mohamed Remo-")
-                        .font(.headline)
-                    Text("Welcome to crossPostr")
-                        .font(.caption)
-                    Button("Logout") { authVM.logout() }
-                    Button("getAllPosts()") { viewModel.getAllPosts() }
-                }
-                Spacer()
-            }
-            .padding()
-            
-            List {
-                Button {
-                    //Hier Navigation
-                } label: {
-                    DashboardNewPostCard()
-                }
-                
-                ForEach(viewModel.posts, id: \.id) { post in
-                    DashboardCard(post: post)
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                if let index = viewModel.posts.firstIndex(where: {
-                                    $0.id == post.id
-                                }) {
-                                    viewModel.posts.remove(at: index)
-                                }
-                            } label: {
-                                Label("Löschen", systemImage: "trash")
-                            }
-                        }
-                }
-            }
-            .listRowBackground(Color.clear)
-            .listItemTint(Color.clear)
-            .listRowSeparatorTint(Color.clear)
-            .listSectionSeparatorTint(Color.clear)
-            .listStyle(.plain)
+    @ObservedObject var createVM: CreateViewModel
+    @EnvironmentObject var errorManager: ErrorManager
 
+    var body: some View {
+        NavigationStack {
+            VStack {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Mohamed Remo-")
+                            .font(.headline)
+                        Text("Welcome to crossPostr")
+                            .font(.caption)
+                    }
+                    Spacer()
+                }
+                .padding()
+                .background(Color.clear)
+
+                List {
+                    Button {
+                        viewModel.showCreatePostSheet.toggle()
+                    } label: {
+                        DashboardNewPostCard()
+                    }
+
+                    ForEach(viewModel.posts, id: \.id) { post in
+                        ZStack {
+
+                            DashboardCard(post: post, viewModel: viewModel)
+                            NavigationLink(
+                                "",
+                                destination: PostDetailView(
+                                    vM: viewModel, post: post)
+                            )
+                            .opacity(0.0)
+                        }
+                    }
+                    Spacer() // Ein optionaler Abstand nach unten
+                               .frame(height: 38) // Höhe entsprechend deiner gewünschten Toleranz
+                }
+                .listStyle(PlainListStyle())
+                .listRowBackground(Color.clear)
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
+
+            }
+            .background(Color.clear)
         }
+        .background(Color.clear)
+        .alert("Fehler", isPresented: .constant(errorManager.currentError != nil)) {
+            Button("OK", role: .cancel) { errorManager.clearError() }
+        } message: {
+            Text(errorManager.currentError ?? "Unbekannter Fehler")
+        }
+        .onAppear {
+            viewModel.getAllPosts()
+        }
+        .sheet(
+            isPresented: $viewModel.showCreatePostSheet,
+            content: {
+                CreateView(viewModel: createVM)
+            }
+        )
         .overlay {
             //Hier ProgressView rein
         }
+        
     }
 }
 
@@ -64,7 +83,7 @@ struct DashboardNewPostCard: View {
 
     var body: some View {
         ZStack {
-            AppTheme.blueGradient.opacity(1.0)
+            AppTheme.mainBackground.opacity(1.0)
             Rectangle()
                 .foregroundColor(.clear)
                 .frame(width: 370, height: 140)
@@ -98,10 +117,11 @@ struct DashboardNewPostCard: View {
 
 struct DashboardCard: View {
     @State var post: Post
+    @ObservedObject var viewModel: DashboardViewModel
 
     var body: some View {
         ZStack {
-            AppTheme.blueGradient
+            AppTheme.mainBackground
             Rectangle()
                 .foregroundColor(.clear)
                 .frame(width: 370, height: 140)
@@ -137,6 +157,17 @@ struct DashboardCard: View {
         }
         .cornerRadius(30)
         .padding(.horizontal, 20)
+        .swipeActions {
+            Button(role: .destructive) {
+                if let index = viewModel.posts.firstIndex(where: {
+                    $0.id == post.id
+                }) {
+                    viewModel.posts.remove(at: index)
+                }
+            } label: {
+                Label("Löschen", systemImage: "trash")
+            }
+        }
     }
 }
 
@@ -146,7 +177,9 @@ struct DashboardCard: View {
         DashboardViewModel()
     @Previewable @StateObject var authVM: AuthViewModel =
         AuthViewModel()
+    @Previewable @StateObject var createVM: CreateViewModel =
+        CreateViewModel()
 
-    DashboardView(viewModel: viewModel, authVM: authVM)
+    DashboardView(viewModel: viewModel, authVM: authVM, createVM: createVM)
 
 }

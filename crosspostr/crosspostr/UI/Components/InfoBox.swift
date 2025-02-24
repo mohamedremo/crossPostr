@@ -5,7 +5,7 @@ struct InfoBox: View {
     @State var description: String = "Deine Storys. Überall."
     var body: some View {
         ZStack {
-            AppTheme.blueGradient
+            AppTheme.mainBackground
             HStack {
                 VStack {
                     Spacer()

@@ -8,20 +8,21 @@ import SwiftUI
 import AVKit
 import PhotosUI
 
-struct DashboardDetailView: View {
-//    @Binding var post: Post
-    @ObservedObject var vM: DashboardDetailViewModel
+struct PostDetailView: View {
+    @ObservedObject var vM: DashboardViewModel
+    var post: Post
+    
     var body: some View {
         VStack {
-            Text("\(vM.post.createdAt)")
+            Text("\(post.createdAt)")
             Image(systemName: "photo")
                 .resizable()
                 .frame(width: 75, height: 75)
                 .scaledToFit()
                 .mask(Circle())
-            Text(vM.post.content)
+            Text(post.content)
             ScrollView(.horizontal) {
-                MediaListView(urls: vM.getMediaFilesForPost(vM.post))
+                MediaListView(urls: vM.getMediaFilesForPost(post))
             }
         }
     }
@@ -62,7 +63,7 @@ struct MediaListView: View {
     }
 }
 
-#Preview {
-    @Previewable @StateObject var vM = DashboardDetailViewModel()
-    DashboardDetailView(vM: vM)
-}
+//#Preview {
+//    @Previewable @StateObject var vM = DashboardViewModel()
+//    DashboardDetailView(vM: vM)
+//}

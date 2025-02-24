@@ -30,7 +30,7 @@ struct AnimatedContainerView<Content: View>: View {
     
     var body: some View {
         ZStack {
-            AppTheme.blueGradient.ignoresSafeArea()
+            AppTheme.mainBackground.ignoresSafeArea()
             
             Canvas { context, size in
                 for particle in vM.particles {

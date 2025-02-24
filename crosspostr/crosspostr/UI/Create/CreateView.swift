@@ -6,6 +6,7 @@ import SwiftUI
 
 struct CreateView: View {
     @ObservedObject var viewModel: CreateViewModel
+    @EnvironmentObject var errorManager: ErrorManager
     var screen = UIScreen.main.bounds
 
     var body: some View {
@@ -86,7 +87,9 @@ struct CreateView: View {
             }
 
             Button("Posten") {
-                viewModel.uploadPostToSupabase()
+                Task {
+                    await viewModel.uploadPostToSupabase()
+                }
             }
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isUploading)
@@ -97,6 +100,11 @@ struct CreateView: View {
             Spacer()
         }
         .padding()
+        .alert("Fehler", isPresented: .constant(errorManager.currentError != nil)) {
+            Button("OK", role: .cancel) { errorManager.clearError() }
+        } message: {
+            Text(errorManager.currentError ?? "Unbekannter Fehler")
+        }
         .onTapGesture {
             Utils.shared.hideKeyboard()
         }

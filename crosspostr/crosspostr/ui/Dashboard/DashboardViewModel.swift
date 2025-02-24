@@ -11,60 +11,7 @@ class DashboardViewModel: ObservableObject {
     
     @Published var posts: [Post] = []
     @Published var isLoading: Bool = false
-
-    @Published var mockPosts: [Post] = [
-        Post(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-             content: "Post 1: Hardcoded content",
-             createdAt: Date(timeIntervalSince1970: 1609459200),
-             mediaId: UUID(),
-             metadata: "Metadata 1",
-             platforms: "Instagram",
-             scheduledAt: Date(timeIntervalSince1970: 1609462800),
-             status: "published",
-             userId: "User1"),
-        
-        Post(id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
-             content: "Post 2: Hardcoded content",
-             createdAt: Date(timeIntervalSince1970: 1609459201),
-             mediaId: UUID(),
-             metadata: "Metadata 2",
-             platforms: "Facebook",
-             scheduledAt: Date(timeIntervalSince1970: 1609462801),
-             status: "published",
-             userId: "User2"),
-        
-        Post(id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!,
-             content: "Post 3: Hardcoded content",
-             createdAt: Date(timeIntervalSince1970: 1609459202),
-             mediaId: UUID(),
-             metadata: "Metadata 3",
-             platforms: "Twitter",
-             scheduledAt: Date(timeIntervalSince1970: 1609462802),
-             status: "published",
-             userId: "User3"),
-        
-        Post(id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!,
-             content: "Post 4: Hardcoded content",
-             createdAt: Date(timeIntervalSince1970: 1609459203),
-             mediaId: UUID(),
-             metadata: "Metadata 4",
-             platforms: "LinkedIn",
-             scheduledAt: Date(timeIntervalSince1970: 1609462803),
-             status: "published",
-             userId: "User4"),
-        
-        Post(id: UUID(uuidString: "00000000-0000-0000-0000-000000000005")!,
-             content: "Post 5: Hardcoded content",
-             createdAt: Date(timeIntervalSince1970: 1609459204),
-             mediaId: UUID(),
-             metadata: "Metadata 5",
-             platforms: "Instagram",
-             scheduledAt: Date(timeIntervalSince1970: 1609462804),
-             status: "published",
-             userId: "User5"),
-    ]
-    
-    
+    @Published var showCreatePostSheet: Bool = false
 
     private var repo = Repository.shared
     
@@ -74,6 +21,23 @@ class DashboardViewModel: ObservableObject {
         }
         self.posts = repo.localRepository.fetchAllPosts(userId: currentUser.uid)
         print("Successfully fetched local posts - \(posts)")
+    }
+    
+    ///essenziell für die darstellung der bilder die im cache zum jeweiligen post gespeichert ist
+    func getMediaFilesForPost(_ post: Post) -> [URL] {
+        guard let mediaId = post.mediaId else {
+            return []
+        }
+        
+        var mediaURLs: [URL] = []
+        
+        do {
+            mediaURLs = try repo.localRepository.getFiles(inFolderWith: mediaId)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        return mediaURLs
     }
 
     func fetchAllRemotes() async {

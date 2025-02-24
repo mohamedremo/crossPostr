@@ -36,7 +36,7 @@ struct CustomButton: View {
 
 #Preview {
     ZStack{
-        AppTheme.blueGradient.ignoresSafeArea()
+        AppTheme.mainBackground.ignoresSafeArea()
         CustomButton(title: "perfekt") {
         }
     }

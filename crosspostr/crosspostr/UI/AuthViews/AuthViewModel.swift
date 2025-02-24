@@ -31,6 +31,7 @@ class AuthViewModel: ObservableObject {
     // MARK: - Properties
     
     private var repo = Repository.shared
+    private var errorManager = ErrorManager.shared
     
     @Published var user: User?
     @Published var email: String = ""
@@ -40,6 +41,10 @@ class AuthViewModel: ObservableObject {
     /// Checks if a user is currently logged in
     var isLoggedIn: Bool {
         return repo.currentUser != nil
+    }
+    
+    var mainProfile: Profile? {
+        return repo.mainProfile
     }
     
     // MARK: - Authentication Functions
@@ -60,6 +65,7 @@ class AuthViewModel: ObservableObject {
             print(self.user?.email ?? "No User set")
         } catch {
             print(error.localizedDescription)
+            errorManager.setError(error)
         }
     }
     
@@ -70,6 +76,7 @@ class AuthViewModel: ObservableObject {
             self.user = nil
         } catch {
             print(error.localizedDescription)
+            errorManager.setError(error)
         }
     }
     
@@ -104,6 +111,7 @@ class AuthViewModel: ObservableObject {
             print(self.user?.email ?? "No User set")
         } catch {
             print(error.localizedDescription)
+            errorManager.setError(error)
         }
     }
     
@@ -132,6 +140,7 @@ class AuthViewModel: ObservableObject {
                 self.user = repo.currentUser
             } catch {
                 print(error.localizedDescription)
+                errorManager.setError(error)
             }
         }
     }
