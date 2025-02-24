@@ -18,4 +18,5 @@ class Profile: Identifiable {
         self.birthDate = birthDate
         self.profileImageUrl = profileImageUrl
     }
+    
 }

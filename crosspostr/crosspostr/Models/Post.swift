@@ -24,6 +24,18 @@ class Post: Identifiable {
         self.status = status
         self.userId = userId
     }
+    
+    init(id: UUID, content: String, createdAt: Date, mediaId: UUID, metadata: String, platforms: String,scheduledAt: Date, status: String, userId: String) {
+        self.id = id
+        self.content = content
+        self.createdAt = createdAt
+        self.mediaId = mediaId
+        self.metadata = metadata
+        self.platforms = platforms
+        self.scheduledAt = scheduledAt
+        self.status = status
+        self.userId = userId
+    }
 
     /// Berechnet die Metadaten für verschiedene Social-Media-Plattformen.
     func calculateMetaData() -> String {
@@ -187,7 +199,6 @@ extension Post {
             createdAt: self.createdAt,
             id: self.id,
             mediaId: self.mediaId ?? UUID(),
-            metadata: self.metadata,
             platforms: self.platforms,
             scheduledAt: self.scheduledAt,
             status: self.status,

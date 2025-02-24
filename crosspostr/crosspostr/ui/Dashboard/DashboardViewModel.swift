@@ -11,6 +11,7 @@ class DashboardViewModel: ObservableObject {
     
     @Published var posts: [Post] = []
     @Published var isLoading: Bool = false
+    @Published var showCreatePostSheet: Bool = false
 
     private var repo = Repository.shared
     
@@ -20,6 +21,23 @@ class DashboardViewModel: ObservableObject {
         }
         self.posts = repo.localRepository.fetchAllPosts(userId: currentUser.uid)
         print("Successfully fetched local posts - \(posts)")
+    }
+    
+    ///essenziell für die darstellung der bilder die im cache zum jeweiligen post gespeichert ist
+    func getMediaFilesForPost(_ post: Post) -> [URL] {
+        guard let mediaId = post.mediaId else {
+            return []
+        }
+        
+        var mediaURLs: [URL] = []
+        
+        do {
+            mediaURLs = try repo.localRepository.getFiles(inFolderWith: mediaId)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        return mediaURLs
     }
 
     func fetchAllRemotes() async {
@@ -35,4 +53,5 @@ class DashboardViewModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
+    
 }

@@ -35,24 +35,29 @@ import Foundation
 import GoogleSignIn
 import Supabase
 import SwiftData
+import SwiftUI
 
 @MainActor
 class Repository {
     // MARK: - shared instances
-
+    
     static let shared: Repository = Repository()
+    private let authClient = BackendClient.shared.auth
     let remoteRepository: RemoteRepository = RemoteRepository()
     let localRepository: LocalRepository = LocalRepository()
 
     private init() {}
-
     
-    // MARK: - Firebase functions
-    private let authClient = BackendClient.shared.auth
+    /**
+        The currenUser who is Logged in the App.
+        delivered by a Computed Property
     
+     */
     var currentUser: FirebaseAuth.User? {
         return authClient.currentUser
     }
+    
+    var mainProfile: Profile? = nil
 
     /**
         Logs in a user using their email and password through Firebase Auth.
@@ -67,17 +72,27 @@ class Repository {
         try await authClient.signIn(withEmail: email, password: password)
     }
 
-    /// Logs out the current user.
+    /**
+        Logs out a User
+
+        - Throws: An error if the Logout fails.
+        */
     func logout() throws {
         try? authClient.signOut()
     }
 
-    /// Registers a new user in Firebase Authentication.
+    /**
+        Register a new User using their email and password through Firebase Auth.
+
+        - Parameters:
+           - email: The email address of the user.
+           - password: The password for the user's account.
+
+        - Throws: An error if the authentication fails.
+        */
     func register(email: String, password: String) async throws {
         try await authClient.createUser(withEmail: email, password: password)
     }
-
-    // MARK:  Google OAuth Sign-In
 
     /**
      Handles Google Sign-In authentication and integrates it with Firebase.
@@ -99,11 +114,6 @@ class Repository {
         }
         ```
      */
-    enum AuthError: Error {
-        case noRootViewController
-        case missingIDToken
-    }
-
     func googleSignIn() async throws {
         guard let rootViewController = Utils.shared.getRootViewController()
         else {
@@ -123,7 +133,7 @@ class Repository {
         )
 
         // Authenticate with Firebase
-        let authResult = try await authClient.signIn(with: credential)
+        try await authClient.signIn(with: credential)
 
         // Optional: Create a profile instance
         let profile = Profile(
@@ -134,13 +144,19 @@ class Repository {
             birthDate: nil,
             profileImageUrl: nil
         )
+    
+        
 
         print(
             "Google Sign-In successful. Firebase User: \(self.authClient.currentUser?.email ?? "No Email")"
         )
         print("New Profile \(profile) has been created.")
     }
-
+    
+    /**
+     Handles Googles Restore Sign-In authentication and integrates it with Firebase.
+     If someone is already logged in the : error = nil
+     */
     func restoreSignIn() {
         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
             guard error == nil else {
@@ -149,4 +165,9 @@ class Repository {
             }
         }
     }
+}
+
+enum AuthError: Error {
+    case noRootViewController
+    case missingIDToken
 }

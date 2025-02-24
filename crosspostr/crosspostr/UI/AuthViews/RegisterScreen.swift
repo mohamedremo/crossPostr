@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RegisterScreen: View {
     @ObservedObject var vM: AuthViewModel
-
+    @EnvironmentObject var errorManager: ErrorManager
     var body: some View {
         AnimatedContainerView {
             VStack {
@@ -13,7 +13,7 @@ struct RegisterScreen: View {
                 }
                 Spacer()
                 RoundedRectangle(cornerRadius: 60)
-                    .fill(AppTheme.blueGradient)
+                    .fill(AppTheme.mainBackground)
                     .frame(maxWidth: .infinity, maxHeight: 500,alignment: .bottom)
                     .padding(.vertical, -40)
                     .overlay {
@@ -89,6 +89,11 @@ struct RegisterScreen: View {
                         }
                     }
             }
+        }
+        .alert("Fehler", isPresented: .constant(errorManager.currentError != nil)) {
+            Button("OK", role: .cancel) { errorManager.clearError() }
+        } message: {
+            Text(errorManager.currentError ?? "Unbekannter Fehler")
         }
     }
 }

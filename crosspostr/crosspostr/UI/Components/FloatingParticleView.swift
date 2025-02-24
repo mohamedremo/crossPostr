@@ -7,7 +7,7 @@ struct FloatingParticlesView: View {
         ZStack {
             ForEach(particles) { particle in
                 Circle()
-                    .fill(AppTheme.blueGradient)
+                    .fill(AppTheme.mainBackground)
                     .frame(width: particle.size, height: particle.size)
                     .opacity(particle.opacity)
                     .position(particle.position)

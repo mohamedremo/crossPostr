@@ -1,12 +1,12 @@
 import AVKit
 import PhotosUI
-import SwiftData
 import SwiftUI
 
 // MARK: - Views
 
 struct CreateView: View {
-    @ObservedObject var viewModel: PostViewModel
+    @ObservedObject var viewModel: CreateViewModel
+    @EnvironmentObject var errorManager: ErrorManager
     var screen = UIScreen.main.bounds
 
     var body: some View {
@@ -20,7 +20,6 @@ struct CreateView: View {
 
             DescriptionTextField(text: $viewModel.postText)
 
-            //  Medienauswahl
             PhotosPicker(
                 selection: $viewModel.selectedMedia,
                 maxSelectionCount: 10,
@@ -31,13 +30,13 @@ struct CreateView: View {
             .photosPickerStyle(.presentation)
             .onChange(of: viewModel.selectedMedia) { _, _ in
                 Task {
-                    //Hier Medien Lokal speichern
+                    await viewModel.loadSelectedMedia()
                 }
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    // 🔹 Bilder aus `mediaIds`
+                    // Anzeige der Bilder
                     ForEach(viewModel.images, id: \.self) { image in
                         Image(uiImage: image)
                             .resizable()
@@ -46,12 +45,12 @@ struct CreateView: View {
                             .cornerRadius(12)
                             .transition(.move(edge: .leading))
                             .animation(
-                                .easeInOut, value: viewModel.images
+                                .easeInOut, value: viewModel.videoURLs
                             )
                             .overlay(alignment: .topTrailing) {
                                 Button {
-                                    withAnimation {
-//                                        viewModel.deleteImage(image: image)
+                                    withAnimation{
+                                        viewModel.deleteImage(image: image)
                                     }
                                 } label: {
                                     Image(systemName: "xmark.circle.fill")
@@ -61,7 +60,7 @@ struct CreateView: View {
                             }
                     }
 
-                    // 🔹 Videos aus `mediaIds`
+                    // Anzeige der Videos
                     ForEach(viewModel.videoURLs, id: \.self) { url in
                         if let player = viewModel.videoPlayers[url] {
                             CustomVideoPlayer(player: player)
@@ -74,7 +73,7 @@ struct CreateView: View {
                                 .overlay(alignment: .topTrailing) {
                                     Button {
                                         withAnimation {
-                                            //viewModel.deleteVideo(url: url)
+                                            viewModel.deleteVideo(url: url)
                                         }
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
@@ -89,7 +88,7 @@ struct CreateView: View {
 
             Button("Posten") {
                 Task {
-                    //await viewModel.createPost()  //Post erstellen & hochladen
+                    await viewModel.uploadPostToSupabase()
                 }
             }
             .buttonStyle(.borderedProminent)
@@ -98,38 +97,32 @@ struct CreateView: View {
             if viewModel.isUploading {
                 ProgressView()
             }
-
             Spacer()
         }
-        .alert(
-            viewModel.errorMessage, isPresented: $viewModel.showAlert,
-            actions: {
-                Button("Ok") {
-                    viewModel.showAlert.toggle()
-                }
-            }
-        )
-        .task {
-            //            viewModel.getImages()
-            //            viewModel.getVideoURLs()
-        }
         .padding()
+        .alert("Fehler", isPresented: .constant(errorManager.currentError != nil)) {
+            Button("OK", role: .cancel) { errorManager.clearError() }
+        } message: {
+            Text(errorManager.currentError ?? "Unbekannter Fehler")
+        }
         .onTapGesture {
             Utils.shared.hideKeyboard()
         }
     }
 }
 
-// MARK: - Plattform-Auswahl
 struct PlatformSelectionView: View {
-    @ObservedObject var viewModel: PostViewModel
+    @ObservedObject var viewModel: CreateViewModel
     var body: some View {
         VStack(alignment: .leading) {
             Text("Plattformen auswählen:")
                 .font(.headline)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
-                    ForEach(Platform.allCases, id: \.self) { platform in
+                    ForEach(
+                        Platform.allCases,
+                        id: \.self
+                    ) { platform in
                         Button(action: {
                             viewModel.togglePlatformSelection(platform)
                         }) {
@@ -137,7 +130,8 @@ struct PlatformSelectionView: View {
                                 .padding()
                                 .background(
                                     viewModel.selectedPlatforms.contains(
-                                        platform) ? Color.purple : Color.gray
+                                        platform)
+                                        ? Color.purple : Color.gray
                                 )
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
@@ -149,9 +143,9 @@ struct PlatformSelectionView: View {
     }
 }
 
-// MARK: - Vorschau für Xcode-Previews
-//#Preview {
-//    @Previewable var previewContext = PreviewModelContainer.shared.mainContext
-//    @Previewable @StateObject var previewViewModel = PostViewModel()
-//    CreateView(viewModel: previewViewModel)
-//}
+
+
+#Preview {
+    @StateObject @Previewable var viewModel: CreateViewModel = CreateViewModel()
+    CreateView(viewModel: viewModel)
+}

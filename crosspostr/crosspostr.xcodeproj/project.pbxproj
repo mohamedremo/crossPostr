@@ -40,6 +40,7 @@
 		EC47D2F82D48E5FE00EF0846 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = EC47D2F72D48E5FE00EF0846 /* FirebaseStorage */; };
 		EC47D2FA2D48E5FE00EF0846 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = EC47D2F92D48E5FE00EF0846 /* FirebaseStorageCombine-Community */; };
 		EC47D2FC2D48E5FE00EF0846 /* FirebaseVertexAI in Frameworks */ = {isa = PBXBuildFile; productRef = EC47D2FB2D48E5FE00EF0846 /* FirebaseVertexAI */; };
+		EC8A87152D688A840022652E /* SnapSDK in Frameworks */ = {isa = PBXBuildFile; productRef = EC8A87142D688A840022652E /* SnapSDK */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,6 +80,7 @@
 				EC47D2F62D48E5FE00EF0846 /* FirebaseRemoteConfig in Frameworks */,
 				EC47D2D22D48E5FE00EF0846 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				EC47D2EE2D48E5FE00EF0846 /* FirebaseInstallations in Frameworks */,
+				EC8A87152D688A840022652E /* SnapSDK in Frameworks */,
 				EC39FAE82D425BF90099A7BC /* Lottie in Frameworks */,
 				EC47D2E42D48E5FE00EF0846 /* FirebaseFirestore in Frameworks */,
 				EC47D2CE2D48E5FE00EF0846 /* FirebaseAnalytics in Frameworks */,
@@ -180,6 +182,7 @@
 				EC47D2FB2D48E5FE00EF0846 /* FirebaseVertexAI */,
 				EC37E5A92D4E2517006967F1 /* GoogleSignIn */,
 				EC37E5AB2D4E2517006967F1 /* GoogleSignInSwift */,
+				EC8A87142D688A840022652E /* SnapSDK */,
 			);
 			productName = crosspostr;
 			productReference = EC0490452D3E686600B793D5 /* crosspostr.app */;
@@ -214,6 +217,7 @@
 				EC39FAE62D425BF90099A7BC /* XCRemoteSwiftPackageReference "lottie-spm" */,
 				EC47D2CC2D48E5FE00EF0846 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				EC37E5A82D4E2517006967F1 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				EC8A87132D688A830022652E /* XCRemoteSwiftPackageReference "snap-kit-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EC0490462D3E686600B793D5 /* Products */;
@@ -371,6 +375,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = crosspostr/crosspostr.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"crosspostr/Preview Content\"";
@@ -405,6 +410,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = crosspostr/crosspostr.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"crosspostr/Preview Content\"";
@@ -488,6 +494,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 11.7.0;
+			};
+		};
+		EC8A87132D688A830022652E /* XCRemoteSwiftPackageReference "snap-kit-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Snapchat/snap-kit-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -652,6 +666,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EC47D2CC2D48E5FE00EF0846 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseVertexAI;
+		};
+		EC8A87142D688A840022652E /* SnapSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EC8A87132D688A830022652E /* XCRemoteSwiftPackageReference "snap-kit-spm" */;
+			productName = SnapSDK;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

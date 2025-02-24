@@ -11,6 +11,7 @@ import AuthenticationServices
 
 struct AlternativeLogins: View {
     @ObservedObject var authVM: AuthViewModel
+    @StateObject var SnapVM: SnapchatAuthManager = SnapchatAuthManager()
     var body: some View {
         HStack {
             Image(.lineLeft)
@@ -25,6 +26,7 @@ struct AlternativeLogins: View {
             SocialMediaButton(image: .apple, action: {
                 
             })
+            
         }
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LoginScreen: View {
     @ObservedObject var vM: AuthViewModel
+    @EnvironmentObject var errorManager: ErrorManager
 
     var body: some View {
         AnimatedContainerView {
@@ -13,7 +14,7 @@ struct LoginScreen: View {
                 }
                 Spacer()
                 RoundedRectangle(cornerRadius: 60)
-                    .fill(AppTheme.blueGradient)
+                    .fill(AppTheme.mainBackground)
                     .frame(
                         maxWidth: .infinity,
                         maxHeight: 500,
@@ -61,7 +62,6 @@ struct LoginScreen: View {
                                         await vM.login(
                                             email: vM.email,
                                             password: vM.password)
-                                        print("login Succesful")
                                     }
                                 }
                             )
@@ -71,6 +71,11 @@ struct LoginScreen: View {
                         }
                     }
             }
+        }
+        .alert("Fehler", isPresented: .constant(errorManager.currentError != nil)) {
+            Button("OK", role: .cancel) { errorManager.clearError() }
+        } message: {
+            Text(errorManager.currentError ?? "Unbekannter Fehler")
         }
     }
 }

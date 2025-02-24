@@ -40,7 +40,7 @@ struct TabBarView<Content: View>: View {
     var body: some View {
         VStack {
             ZStack {
-                AppTheme.blueGradient.ignoresSafeArea() ///App-Hintergrund
+                AppTheme.mainBackground.ignoresSafeArea() ///App-Hintergrund
                 FloatingParticlesView()
                 content()
             }
@@ -78,7 +78,7 @@ struct TabButton: View {
             Image(systemName: tab.image)
                 .font(.title3)
                 .fontWeight(tab == vM.selectedPage ? .bold : .regular)
-                .foregroundStyle(AppTheme.blueGradient)
+                .foregroundStyle(AppTheme.mainBackground)
             Text(tab.label)
                 .font(.footnote)
         }
@@ -95,12 +95,13 @@ class TabBarViewModel: ObservableObject {
 }
 
 #Preview {
+    @Previewable @StateObject var vM = TabBarViewModel()
     @Previewable @StateObject var dashboardVM = DashboardViewModel()
     @Previewable @StateObject var authVM = AuthViewModel()
-    @Previewable @StateObject var vM = TabBarViewModel()
+    @Previewable @StateObject var createVM: CreateViewModel = CreateViewModel()
     TabBarView(vM: vM) {
         switch vM.selectedPage {
-        case .home: DashboardView(viewModel: dashboardVM, authVM: authVM)
+        case .home: DashboardView(viewModel: dashboardVM, authVM: authVM,createVM: createVM)
         case .create: Text("Create")
         case .settings: Text("Settings")
         }
