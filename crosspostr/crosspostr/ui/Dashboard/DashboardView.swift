@@ -17,7 +17,7 @@ struct DashboardView: View {
             VStack {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("Mohamed Remo-")
+                        Text(authVM.mainProfile?.fullName ?? "User")
                             .font(.headline)
                         Text("Welcome to crossPostr")
                             .font(.caption)
