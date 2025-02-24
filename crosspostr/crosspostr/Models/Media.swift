@@ -41,6 +41,17 @@ extension Media {
     }
 }
 
+enum MediaType: String, Codable {
+    case image = "image"
+    case video = "video"
+}
+
+extension MediaType {
+    init?(from string: String) {
+        self.init(rawValue: string.lowercased()) // Wandelt automatisch um, falls der String gültig ist
+    }
+}
+
 
 
 

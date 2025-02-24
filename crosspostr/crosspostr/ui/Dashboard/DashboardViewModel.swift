@@ -54,4 +54,9 @@ class DashboardViewModel: ObservableObject {
         }
     }
     
+    //FÜR DETAIL VIEW
+    func matchedPlatformsFromString(_ input: String) -> [Platform] {
+        Platform.matchedPlatforms(from: input)
+    }
+    
 }

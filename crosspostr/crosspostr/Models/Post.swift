@@ -36,7 +36,8 @@ class Post: Identifiable {
         self.status = status
         self.userId = userId
     }
-
+    
+    
     /// Berechnet die Metadaten für verschiedene Social-Media-Plattformen.
     func calculateMetaData() -> String {
         let platformsList = platforms.split(separator: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
@@ -190,6 +191,7 @@ class Post: Identifiable {
         // Sicherheit: Score darf nicht negativ sein
         return max(score, 0)
     }
+
 }
 
 extension Post {
@@ -209,4 +211,33 @@ extension Post {
 
 enum PostStatus: String, Codable {
     case scheduled, published, failed
+}
+
+enum Platform: String, CaseIterable {
+    case instagram, twitter, facebook, snapchat
+    
+
+    func details() -> (text: String, image: String) {
+            switch self {
+            case .instagram:
+                return ("Instagram", "instagram_icon")
+            case .twitter:
+                return ("Twitter", "twitter_icon")
+            case .facebook:
+                return ("Facebook", "facebook_icon")
+            case .snapchat:
+                return ("Snapchat", "snapchat_icon")
+            }
+        }
+    
+    static func matchedPlatforms(from input: String) -> [Platform] {
+        // Aufteilen des Strings nach Kommas und Leerzeichen, dann Leerzeichen trimmen und Kleinbuchstaben verwenden
+        let platformStrings = input
+            .lowercased()
+            .split { $0 == "," || $0 == " " }
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        // Plattform-Enums filtern, die mit den String-Werten übereinstimmen
+        return platformStrings.compactMap { Platform(rawValue: $0) }
+    }
 }
