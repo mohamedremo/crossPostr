@@ -1,40 +1,3 @@
-
-//  MARK: - PostViewModel Class
-/**
- The `PostViewModel` class manages the state and logic for creating a new post in the crosspostr app.
- It handles text input, platform selection, and media (images and videos) loading from the PhotosPicker.
- It provides asynchronous methods for loading media and maintains persistent AVPlayer instances for video playback.
- 
- ## Responsibilities:
- - Manage the post's text content.
- - Handle selection and deselection of social media platforms.
- - Load and store images and videos selected via the PhotosPicker.
- - Cache AVPlayer instances for smooth video playback.
- - Support deletion of loaded media items.
- 
- ## Properties:
- - `postText`: The text content of the post.
- - `selectedPlatforms`: A set of social media platforms selected for posting.
- - `selectedMedia`: An array of media items selected via the PhotosPicker.
- - `images`: An array of loaded `UIImage` objects.
- - `videoURLs`: An array of URLs pointing to temporarily stored video files.
- - `videoPlayers`: A dictionary mapping video URLs to their corresponding `AVPlayer` instances.
- - `isUploading`: A flag indicating whether an upload process is currently active.
- 
- ## Functions:
- - `togglePlatformSelection(_:)`: Toggles the selection state of a given platform.
- - `clear()`: Clears all current post data.
- - `loadImage(from:)`: Asynchronously loads an image from a provided `PhotosPickerItem`.
- - `loadVideo(from:)`: Asynchronously loads a video from a provided `PhotosPickerItem` and writes it to a temporary file.
- - `loadSelectedMedia()`: Asynchronously loads all selected media (images and videos) from the PhotosPicker.
- - `deleteVideo(url:)`: Removes a video from the loaded media using its URL.
- - `deleteImage(image:)`: Removes an image from the loaded media.
- 
- ## Author:
- - Mohamed Remo
- - Version: 1.0
- */
- 
 import PhotosUI
 import SwiftUI
 import AVKit
@@ -43,23 +6,17 @@ import AVKit
 class CreateViewModel: ObservableObject {
 
     @Published var postText: String = ""
-    
     @Published var selectedPlatforms: Set<Platform> = [.instagram]
-    
     @Published var selectedMedia: [PhotosPickerItem] = []
-
     @Published var images: [UIImage] = []
-    
     @Published var videoURLs: [URL] = []
-    
     @Published var videoPlayers: [URL: AVPlayer] = [:]
-    
     @Published var isUploading: Bool = false
-    
     @Published var errorMessage = ""
     
     private let repo = Repository.shared
 
+    // MARK: - Plattform Auswahl
     func togglePlatformSelection(_ platform: Platform) {
         if selectedPlatforms.contains(platform) {
             selectedPlatforms.remove(platform)
@@ -68,6 +25,7 @@ class CreateViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Medien Laden
     func loadSelectedMedia() async {
         images.removeAll()
         videoURLs.removeAll()
@@ -97,88 +55,109 @@ class CreateViewModel: ObservableObject {
     }
     
     func uploadPostToSupabase() async {
-        
         guard let currentUser = repo.currentUser else {
-            print("No current user logged in")
+            print("Kein aktueller User, Upload fehlgeschlagen")
             return
-            
-        }
-        let newMediaId: UUID = UUID()
-        
-        var medias: [MediaDTO] = []
-        
-        do {
-            for image in images {
-                let imageUrl = try repo.localRepository.storeImageInCache(image, id: newMediaId)
-                let newImage = MediaDTO(
-                    id: newMediaId,
-                    devicePath: imageUrl.absoluteString,
-                    url: "",
-                    type: .image,
-                    uploadedAt: Date.now
-                    )
-                medias.append(newImage)
-                try await repo.remoteRepository.insertMediaRemote(newMedia: newImage)
-            }
-        } catch {
-            print(error.localizedDescription)
         }
         
-        do {
-            for video in videoURLs {
-                let videoURL = try repo.localRepository.storeVideoInCache(video, id: newMediaId)
-                let newVideo = MediaDTO(
-                    id: newMediaId,
-                    devicePath: videoURL.absoluteString,
-                    url: "",
-                    type: .video,
-                    uploadedAt: Date.now
-                    )
-                medias.append(newVideo)
-                isUploading = true
-                try await repo.remoteRepository.insertMediaRemote(newMedia: newVideo)
-                isUploading = false
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
+        // Gemeinsame Gruppen-ID für alle Bilder/Videos des Posts
+        let newGroupId = UUID()
+        // Eindeutige Post-ID
+        let postId = UUID()
         
+        isUploading = true
+        
+        // Erstelle den Post – hier wird newGroupId als Medien-Gruppe referenziert
         let newPost = PostDTO(
             content: postText,
             createdAt: Date.now,
-            id: UUID(),
-            mediaId: newMediaId,
+            id: postId,
+            mediaId: newGroupId, //Gemeinsame Gruppen ID
             platforms: commaifySelectedPlatforms(),
             scheduledAt: Date.distantPast,
             status: "posted",
             userId: currentUser.uid
         )
-        
-        Task {
-            do {
-                isUploading = true
-                try await repo.remoteRepository.insertPostRemote(newPost: newPost)
-                isUploading = false
-            } catch {
-                print(error.localizedDescription)
-            }
+        do {
+            try await repo.remoteRepository.insertPostRemote(newPost: newPost)
+            print("Post erfolgreich hochgeladen")
+        } catch {
+            print("Fehler beim Hochladen des Posts: \(error.localizedDescription)")
         }
+        
+        // Bilder verarbeiten
+        do {
+            for image in images {
+                // Eindeutige ID für diesen Medieneintrag
+                
+                let mediaRowId = UUID()
+                let localImageURL = try repo.localRepository.storeImageInCache(image, id: newGroupId)
+                print("url -> \(localImageURL.absoluteString)")
+                
+                let newImage = MediaDTO(
+                    id: mediaRowId, // Eindeutiger Primärschlüssel für diesen Datensatz
+                    userId: currentUser.uid,
+                    postId: postId,
+                    mediaGroupId: newGroupId, // Gemeinsame Group ID
+                    devicePath: localImageURL.absoluteString,
+                    type: .image,
+                    uploadedAt: Date.now
+                )
+                
+                try await repo.remoteRepository.insertMediaRemote(newMedia: newImage)
+                
+                // Erzeuge den Remote-Pfad im Format: "<newGroupId>/image-XYZ.jpg"
+                let remotePath = "\(newGroupId.uuidString)/\(localImageURL.lastPathComponent)"
+                if let imageData = image.jpegData(compressionQuality: 0.8) {
+                    await repo.remoteRepository.uploadFile(path: remotePath, fileData: imageData)
+                } else {
+                    print("Fehler: Bilddaten konnten nicht erzeugt werden.")
+                }
+            }
+        } catch {
+            print("Fehler beim Hochladen der Bilder: \(error.localizedDescription)")
+        }
+        
+        // Videos verarbeiten
+        do {
+            for video in videoURLs {
+                let mediaRowId = UUID()
+                let localVideoURL = try repo.localRepository.storeVideoInCache(video, id: newGroupId)
+                let newVideo = MediaDTO(
+                    id: mediaRowId,
+                    userId: currentUser.uid,
+                    postId: postId,
+                    mediaGroupId: newGroupId,        // Gemeinsame Gruppen-ID
+                    devicePath: localVideoURL.absoluteString,
+                    type: .video,
+                    uploadedAt: Date.now
+                )
+                try await repo.remoteRepository.insertMediaRemote(newMedia: newVideo)
+                
+                let remotePath = "\(newGroupId.uuidString)/\(localVideoURL.lastPathComponent)"
+                let videoData = try Data(contentsOf: localVideoURL)
+                await repo.remoteRepository.uploadFile(path: remotePath, fileData: videoData)
+            }
+        } catch {
+            print("Fehler beim Hochladen der Videos: \(error.localizedDescription)")
+        }
+        
         isUploading = false
         clear()
     }
     
+    // Alternative Methode, falls du einzelne Medien separat hochladen möchtest
     func uploadMediaToSupabaseStorage(media: MediaDTO, data: Data) async {
         do {
             guard let uid = repo.currentUser?.uid else { return }
-            
-            try await repo.remoteRepository.uploadFile(bucket: "media-files", path: "\(uid)/", fileData: data)
+            await repo.remoteRepository.uploadFile(path: "\(uid)/\(media.id)", fileData: data)
             try await repo.remoteRepository.insertMediaRemote(newMedia: media)
         } catch {
-            print(error.localizedDescription)
+            print("Fehler beim Upload von Media: \(error.localizedDescription)")
         }
     }
-
     
+    // MARK: - Hilfsfunktionen
     private func clear() {
         postText = ""
         selectedPlatforms.removeAll()
@@ -188,7 +167,6 @@ class CreateViewModel: ObservableObject {
         videoPlayers.removeAll()
         isUploading = false
         errorMessage = ""
-        
     }
     
     private func commaifySelectedPlatforms() -> String {

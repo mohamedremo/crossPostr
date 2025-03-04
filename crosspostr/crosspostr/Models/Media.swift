@@ -15,6 +15,7 @@ class Media: Identifiable {
     var localPath: String  // 📂 Lokaler Pfad z. B. "file:///var/mobile/Containers/..."
     var type: MediaType
     var createdAt: Date?
+    var mediaGroupId: UUID?
     var remoteURL: String? // 🌐 Falls es hochgeladen wurde
 
     init(id: UUID = UUID(), localPath: String, type: MediaType, createdAt: Date? = nil, remoteURL: String? = nil) {
@@ -28,13 +29,13 @@ class Media: Identifiable {
     
     init(mediaDTO: MediaDTO) {
         self.id = mediaDTO.id
-        self.localPath = mediaDTO.url
+        self.localPath = mediaDTO.devicePath
         self.type = mediaDTO.type
         self.createdAt = mediaDTO.uploadedAt
-        self.remoteURL = mediaDTO.url
+        self.mediaGroupId = mediaDTO.mediaGroupId
     }
 }
-
+@MainActor
 extension Media {
     func toMediaDTO() -> MediaDTO {
         return MediaDTO(from: self)
@@ -44,6 +45,7 @@ extension Media {
 enum MediaType: String, Codable {
     case image = "image"
     case video = "video"
+    case gif = "gif"
 }
 
 extension MediaType {

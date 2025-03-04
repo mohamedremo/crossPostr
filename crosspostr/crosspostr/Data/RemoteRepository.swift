@@ -14,15 +14,13 @@ class RemoteRepository {
     private let authClient = BackendClient.shared.auth
     
     // MARK: - Storage-related Functions
-
-    func uploadFile(bucket: String, path: String, fileData: Data) async throws {
-        let bucketReference = supabaseClient.storage.from(bucket)
+    func uploadFile(path: String, fileData: Data) async {
+        let bucketReference = supabaseClient.storage.from("media-files")
         do {
-            let response = try await bucketReference.upload(path, data: fileData, options: FileOptions(upsert: true)
-            )
-            print("Datei hochgeladen: \(response)")
+            let response = try await bucketReference.upload(path, data: fileData, options: FileOptions(upsert: true))
+            print("Upload erfolgreich: \(response)")
         } catch {
-            throw error
+            print("Upload-Fehler: \(error.localizedDescription)")
         }
     }
 
@@ -40,14 +38,14 @@ class RemoteRepository {
     func deleteFile(bucket: String, path: String) async throws {
         let bucketReference = supabaseClient.storage.from(bucket)
         do {
-            try await bucketReference.remove(paths: [path])
-            print("Datei gelöscht: \(path)")
+            let toDelete = try await bucketReference.remove(paths: [path])
+            print("Datei gelöscht: \(path) -> \(toDelete)")
         } catch {
             throw error
         }
     }
+    
     // MARK: - Post-related Functions
-
     func getAllPostsRemote() async throws -> [PostDTO] {
         guard let currentUser = authClient.currentUser else {
             print("No User logged in")
@@ -92,7 +90,6 @@ class RemoteRepository {
     }
 
     // MARK: - Media-related Functions
-
     func getAllMediaRemote() async throws -> [MediaDTO] {
         guard let currentUser = authClient.currentUser else {
             print("No User logged in")

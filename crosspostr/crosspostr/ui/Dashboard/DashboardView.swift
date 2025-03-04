@@ -63,6 +63,9 @@ struct DashboardView: View {
         } message: {
             Text(errorManager.currentError ?? "Unbekannter Fehler")
         }
+        .task {
+            await viewModel.fetchAllRemotes()
+        }
         .onAppear {
             viewModel.getAllPosts()
         }
@@ -159,10 +162,14 @@ struct DashboardCard: View {
         .padding(.horizontal, 20)
         .swipeActions {
             Button(role: .destructive) {
+                
                 if let index = viewModel.posts.firstIndex(where: {
                     $0.id == post.id
                 }) {
                     viewModel.posts.remove(at: index)
+                    Task {
+                        await viewModel.delete(this: post)
+                    }
                 }
             } label: {
                 Label("Löschen", systemImage: "trash")

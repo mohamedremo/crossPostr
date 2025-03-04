@@ -11,10 +11,9 @@ struct crosspostrApp: App {
     @StateObject var postVM: CreateViewModel = CreateViewModel()
     @StateObject var dashVM: DashboardViewModel = DashboardViewModel()
     @StateObject var createVM: CreateViewModel = CreateViewModel()
-    @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     @StateObject var errorManager = ErrorManager.shared
+    @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     
-    // MARK: - FIREBASE - Initialisierung
     init() {
         loadRocketSimConnect()
         FirebaseConfiguration.shared.setLoggerLevel(.min)
@@ -24,25 +23,17 @@ struct crosspostrApp: App {
     var body: some Scene {
         WindowGroup {
             if hasOnboarded {
-                ContentView(
-                    authVM: authVM,
-                    tabVM: tabVM,
-                    postVM: postVM,
-                    dashVM: dashVM,
-                    createVM: createVM
-                )
+                ContentView(authVM: authVM,tabVM: tabVM,postVM: postVM, dashVM: dashVM,createVM: createVM)
                 .onOpenURL(perform: handleOpenURL) /// Verarbeitet Google, Facebook & Snapchat Logins (Für Access-
                 .environmentObject(errorManager)
                 .task {
-                    await dashVM.fetchAllRemotes() // Start
+                    await dashVM.fetchAllRemotes() /// Zum Start Remotes fetchen
                     dashVM.getAllPosts()
                 }
-                
             } else {
                 OnboardingView(hasOnboarded: $hasOnboarded)
             }
         }
-        
     }
     
     // MARK: - OAuth Redirect Handling (Google als Basis, Facebook optional, Snapchat für Creative Kit)
@@ -58,7 +49,7 @@ struct crosspostrApp: App {
         }
     }
     
-    // MARK: - Facebook mit Google-Konto verknüpfen (Nur Access Token speichern)
+    // MARK: Facebook mit Google-Konto verknüpfen (Nur Access Token speichern)
     func handleFacebookLogin(url: URL) {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               let fragment = components.fragment else {

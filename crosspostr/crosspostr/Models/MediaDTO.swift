@@ -8,40 +8,47 @@ import Foundation
 
 struct MediaDTO: Codable {
     var id: UUID
+    var userId: String
+    var postId: UUID?
+    var mediaGroupId: UUID?
     var devicePath: String
-    var url: String
     var type: MediaType
     var uploadedAt: Date
 
     enum CodingKeys: String, CodingKey {
-        case id, url, type, uploadedAt
+        case id, type, uploadedAt, userId, postId, devicePath, mediaGroupId
     }
     
-    init(id: UUID, devicePath: String, url: String, type: MediaType, uploadedAt: Date) {
+    init(id: UUID, userId: String, postId: UUID,mediaGroupId: UUID?, devicePath: String, type: MediaType, uploadedAt: Date) {
         self.id = id
-        self.url = url
         self.devicePath = devicePath
         self.type = type
         self.uploadedAt = uploadedAt
+        self.userId = userId
+        self.postId = postId
+        self.mediaGroupId = mediaGroupId
     }
+    
     //json decoder for enum handle
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
-        devicePath = try container.decode(String.self, forKey: .url)
-        url = try container.decode(String.self, forKey: .url)
+        devicePath = try container.decode(String.self, forKey: .devicePath)
         uploadedAt = try container.decode(Date.self, forKey: .uploadedAt)
         let typeString = try container.decode(String.self, forKey: .type)
-        type = MediaType(from: typeString) ?? .image // Fallback auf `.image`
+        type = MediaType(from: typeString) ?? .image 
+        userId = try container.decode(String.self, forKey: .userId)
+        postId = try container.decode(UUID.self, forKey: .postId)
+        mediaGroupId = try container.decode(UUID.self, forKey: .mediaGroupId)
     }
     
-    
+    @MainActor
     init(from media: Media) {
         self.id = media.id
         self.devicePath = media.localPath
-        self.url = media.remoteURL ?? ""
         self.type = media.type
         self.uploadedAt = media.createdAt ?? Date()
+        self.userId = Repository.shared.currentUser?.uid ?? ""
     }
 }
 extension MediaDTO {

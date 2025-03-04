@@ -72,7 +72,9 @@ struct PostDetailView: View {
 
 struct MediaListView: View {
     let urls: [URL]
-    
+    @State private var selectedMediaURL: URL?
+    @State private var isFullScreen = false
+
     var body: some View {
         let axes: Axis.Set = [.horizontal]
         
@@ -80,13 +82,17 @@ struct MediaListView: View {
             LazyHStack(spacing: 8.0) {
                 ForEach(urls, id: \.self) { url in
                     if url.pathExtension.lowercased() == "mp4" {
-                        // Video anzeigen und automatisch abspielen
+                        // Video anzeigen und auf Klick in Vollbild schalten
                         VideoPlayerView(url: url)
                             .aspectRatio(1.0, contentMode: .fit)
                             .cornerRadius(8)
-                            .frame(height: 300)
+                            .frame(height: 200)
+                            .onTapGesture {
+                                selectedMediaURL = url
+                                isFullScreen = true
+                            }
                     } else if url.pathExtension.lowercased() == "jpg" || url.pathExtension.lowercased() == "jpeg" {
-                        // Bild anzeigen
+                        // Bild anzeigen und auf Klick in Vollbild schalten
                         if let imageData = try? Data(contentsOf: url),
                            let uiImage = UIImage(data: imageData) {
                             Image(uiImage: uiImage)
@@ -94,7 +100,11 @@ struct MediaListView: View {
                                 .scaledToFit()
                                 .cornerRadius(8)
                                 .aspectRatio(1.0, contentMode: .fit)
-                                .frame(height: 300)
+                                .frame(height: 200)
+                                .onTapGesture {
+                                    selectedMediaURL = url
+                                    isFullScreen = true
+                                }
                         } else {
                             Text("Bild konnte nicht geladen werden")
                                 .foregroundColor(.red)
@@ -104,6 +114,11 @@ struct MediaListView: View {
                             .aspectRatio(1.0, contentMode: .fit)
                     }
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $isFullScreen) {
+            if let mediaURL = selectedMediaURL {
+                FullScreenMediaView(url: mediaURL)
             }
         }
     }
@@ -134,6 +149,29 @@ struct VideoPlayerView: View {
     }
 }
 
+struct FullScreenMediaView: View {
+    let url: URL
+
+    var body: some View {
+        if url.pathExtension.lowercased() == "mp4" {
+            VideoPlayer(player: AVPlayer(url: url))
+                .ignoresSafeArea()
+        } else if url.pathExtension.lowercased() == "jpg" || url.pathExtension.lowercased() == "jpeg" {
+            if let imageData = try? Data(contentsOf: url),
+               let uiImage = UIImage(data: imageData) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .ignoresSafeArea()
+            } else {
+                Text("Bild konnte nicht geladen werden")
+                    .foregroundColor(.red)
+                    .ignoresSafeArea()
+            }
+        }
+    }
+}
+
 struct PostInteractionView: View {
     var likes: Int
     var comments: Int
@@ -149,7 +187,7 @@ struct PostInteractionView: View {
                         
                     HStack{
                         Image(systemName: "hand.thumbsup.fill")
-                        Text("\(likes)") //
+                        Text("\(likes)")
                     }
                         
                 }
