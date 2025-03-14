@@ -1,22 +1,21 @@
-//
-//  ErrorManager.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 23.02.25.
-//
 import Foundation
+
+struct ErrorWrapper: Identifiable {
+    let id = UUID()
+    let message: String
+}
 
 @MainActor
 class ErrorManager: ObservableObject {
     
     static let shared = ErrorManager()
     
-    @Published var currentError: String? = nil
+    @Published var currentError: ErrorWrapper? = nil
     
     private init() {}
 
     func setError(_ error: Error) {
-        self.currentError = error.localizedDescription
+        self.currentError = ErrorWrapper(message: error.localizedDescription)
     }
     
     func clearError() {

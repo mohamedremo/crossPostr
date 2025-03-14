@@ -20,52 +20,55 @@ struct PostDetailView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
+        ZStack{
+            AppTheme.cardGradient.ignoresSafeArea()
+            VStack(alignment: .leading) {
+                
+                Text("Post")
+                    .font(.largeTitle)
+                    .bold()
+                
+                Text("\(post.createdAt.formatted(.dateTime))")
+                    .font(.caption)
+                    .fontWeight(.thin)
             
-            Text("Post")
-                .font(.largeTitle)
-                .bold()
-            
-            Text("\(post.createdAt.formatted(.dateTime))")
-                .font(.caption)
-                .fontWeight(.thin)
-        
-            HStack {
-                ForEach(platforms, id: \.self) { platform in
-                    Image(platform.details().1)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .padding(5)
-                    
+                HStack {
+                    ForEach(platforms, id: \.self) { platform in
+                        Image(platform.details().1)
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .padding(5)
+                        
+                    }
                 }
+                
+                Divider()
+                
+                Text("Auf Plattformen gepostet:")
+                    .font(.caption)
+                    .fontWeight(.thin)
+                    .multilineTextAlignment(.leading)
+                
+                ScrollView(.horizontal) {
+                    MediaListView(urls: vM.getMediaFilesForPost(post))
+                }
+                
+                Text("Beschreibung:")
+                    .font(.caption)
+                    .fontWeight(.thin)
+                    .multilineTextAlignment(.leading)
+                
+                Text(post.content)
+                
+                Divider()
+                
+                PostInteractionView(likes: 95717, comments: 9474, shares: 463)
             }
-            
-            Divider()
-            
-            Text("Auf Plattformen gepostet:")
-                .font(.caption)
-                .fontWeight(.thin)
-                .multilineTextAlignment(.leading)
-            
-            ScrollView(.horizontal) {
-                MediaListView(urls: vM.getMediaFilesForPost(post))
-            }
-            
-            Text("Beschreibung:")
-                .font(.caption)
-                .fontWeight(.thin)
-                .multilineTextAlignment(.leading)
-            
-            Text(post.content)
-            
-            Divider()
-            
-            PostInteractionView(likes: 95717, comments: 9474, shares: 463)
+            .onAppear {
+                        platforms = Platform.matchedPlatforms(from: post.platforms)
+                    }
+            .padding()
         }
-        .onAppear {
-                    platforms = Platform.matchedPlatforms(from: post.platforms)
-                }
-        .padding()
     }
 }
 

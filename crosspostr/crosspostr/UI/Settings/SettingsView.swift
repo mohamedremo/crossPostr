@@ -57,10 +57,14 @@ struct SettingsView: View {
                 
             }
         }
-        .alert("Fehler", isPresented: .constant(errorManager.currentError != nil)) {
-            Button("OK", role: .cancel) { errorManager.clearError() }
-        } message: {
-            Text(errorManager.currentError ?? "Unbekannter Fehler")
+        .alert(item: $errorManager.currentError) { error in
+            Alert(
+                title: Text("Fehler"),
+                message: Text(error.message),
+                dismissButton: .default(Text("OK"), action: {
+                    errorManager.clearError()
+                })
+            )
         }
     }
 }

@@ -42,6 +42,7 @@ struct WelcomeScreen: View {
                         title: "Login",
                         destination: {
                             LoginScreen(vM: authVM)
+                                .environmentObject(errorManager)
                         }
                     )
                     .padding(.vertical, 8)
@@ -49,7 +50,9 @@ struct WelcomeScreen: View {
                     CustomNavigationButton(
                         title: "Register",
                         destination: {
-                            LoginScreen(vM: authVM)
+                            RegisterScreen(vM: authVM)
+                                .environmentObject(errorManager)
+                                
                         }
                     )
                     AlternativeLogins(authVM: authVM)
@@ -58,12 +61,14 @@ struct WelcomeScreen: View {
             }
         }
         .ignoresSafeArea()
-        .alert(
-            "Fehler", isPresented: .constant(errorManager.currentError != nil)
-        ) {
-            Button("OK", role: .cancel) { errorManager.clearError() }
-        } message: {
-            Text(errorManager.currentError ?? "Unbekannter Fehler")
+        .alert(item: $errorManager.currentError) { error in
+            Alert(
+                title: Text("Fehler"),
+                message: Text(error.message),
+                dismissButton: .default(Text("OK"), action: {
+                    errorManager.clearError()
+                })
+            )
         }
     }
 }

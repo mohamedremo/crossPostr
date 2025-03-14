@@ -14,54 +14,57 @@ struct DashboardView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(authVM.mainProfile?.fullName ?? "User")
-                            .font(.headline)
-                        Text("Welcome to crossPostr")
-                            .font(.caption)
+            ZStack {
+                AppTheme.mainBackground
+                    .ignoresSafeArea(.all)
+                VStack {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(authVM.mainProfile?.fullName ?? "User")
+                                .font(.headline)
+                            Text("Welcome to crossPostr")
+                                .font(.caption)
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                }
-                .padding()
-                .background(Color.clear)
+                    .padding()
 
-                List {
-                    Button {
-                        viewModel.showCreatePostSheet.toggle()
-                    } label: {
-                        DashboardNewPostCard()
-                    }
-
-                    ForEach(viewModel.posts, id: \.id) { post in
-                        ZStack {
-
-                            DashboardCard(post: post, viewModel: viewModel)
-                            NavigationLink(
-                                "",
-                                destination: PostDetailView(
-                                    vM: viewModel, post: post)
-                            )
-                            .opacity(0.0)
+                    ScrollView {
+                        VStack(spacing: 6) {
+                            Button {
+                                viewModel.showCreatePostSheet.toggle()
+                            } label: {
+                                DashboardNewPostCard()
+                            }
+                            ForEach(viewModel.posts, id: \.id) { post in
+                                ZStack {
+                                    NavigationLink(
+                                        "",
+                                        destination: PostDetailView(
+                                            vM: viewModel, post: post)
+                                    )
+                                    .opacity(0.0)
+                                    DashboardCard(post: post, viewModel: viewModel)
+                                }
+                            }
+                            Spacer()
+                                .frame(height: 84)
                         }
                     }
-                    Spacer() // Ein optionaler Abstand nach unten
-                               .frame(height: 38) // Höhe entsprechend deiner gewünschten Toleranz
                 }
-                .listStyle(PlainListStyle())
-                .listRowBackground(Color.clear)
-                .scrollContentBackground(.hidden)
                 .background(Color.clear)
-
             }
-            .background(Color.clear)
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
         .background(Color.clear)
-        .alert("Fehler", isPresented: .constant(errorManager.currentError != nil)) {
-            Button("OK", role: .cancel) { errorManager.clearError() }
-        } message: {
-            Text(errorManager.currentError ?? "Unbekannter Fehler")
+        .alert(item: $errorManager.currentError) { error in
+            Alert(
+                title: Text("Fehler"),
+                message: Text(error.message),
+                dismissButton: .default(Text("OK"), action: {
+                    errorManager.clearError()
+                })
+            )
         }
         .onAppear {
             viewModel.getAllPosts()
@@ -70,6 +73,7 @@ struct DashboardView: View {
             isPresented: $viewModel.showCreatePostSheet,
             content: {
                 CreateView(viewModel: createVM)
+                    .environmentObject(errorManager)
             }
         )
         .overlay {
@@ -83,7 +87,6 @@ struct DashboardNewPostCard: View {
 
     var body: some View {
         ZStack {
-            AppTheme.mainBackground.opacity(1.0)
             Rectangle()
                 .foregroundColor(.clear)
                 .frame(width: 370, height: 140)
@@ -179,7 +182,10 @@ struct DashboardCard: View {
         AuthViewModel()
     @Previewable @StateObject var createVM: CreateViewModel =
         CreateViewModel()
+    @Previewable @StateObject var errorHandler: ErrorManager =
+    ErrorManager.shared
 
     DashboardView(viewModel: viewModel, authVM: authVM, createVM: createVM)
+        .environmentObject(errorHandler)
 
 }

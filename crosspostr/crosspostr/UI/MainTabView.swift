@@ -7,20 +7,19 @@ struct MainTabView: View {
     @ObservedObject var postVM: CreateViewModel
     @ObservedObject var dashVM: DashboardViewModel
     @ObservedObject var createVM: CreateViewModel
-    @EnvironmentObject var errorManager: ErrorManager
 
     var body: some View {
         TabBarView(vM: tabVM) {
             switch tabVM.selectedPage {
             case .home:
                 DashboardView(viewModel: dashVM, authVM: authVM, createVM: CreateViewModel())
-                    .environmentObject(errorManager)
+                    .environmentObject(ErrorManager.shared)
             case .create:
                 CreateView(viewModel: postVM)
-                    .environmentObject(errorManager)
+                    .environmentObject(ErrorManager.shared)
             case .settings:
                 SettingsView(vm: authVM )
-                    .environmentObject(errorManager)
+                    .environmentObject(ErrorManager.shared)
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)

@@ -3,6 +3,8 @@ import SwiftUI
 struct LoginScreen: View {
     @ObservedObject var vM: AuthViewModel
     @EnvironmentObject var errorManager: ErrorManager
+    @FocusState private var isInputActive: Bool
+    private let height = UIScreen.main.bounds.height
 
     var body: some View {
         AnimatedContainerView {
@@ -10,25 +12,23 @@ struct LoginScreen: View {
                 HStack {
                     Spacer()
                     Image(.avatarRight)
-                        .offset(y: 80)
+                        .offset(y: isInputActive ?  height * 0.02 : height * 0.2)
+                        
                 }
                 Spacer()
                 RoundedRectangle(cornerRadius: 60)
-                    .fill(AppTheme.mainBackground)
+                    .fill(isInputActive ? AppTheme.mainBackground : AppTheme.cardGradient)
+                    .animation(.easeInOut(duration: 0.3), value: isInputActive)
                     .frame(
                         maxWidth: .infinity,
-                        maxHeight: 500,
-                        alignment: .bottom
+                        maxHeight: .infinity
                     )
-                    .padding(.vertical, -40)
+                    .offset(y: isInputActive ? -height * 0.10 : height * 0.10)
+                    .padding(.vertical, -height * 0.05)
+                    .ignoresSafeArea()
                     .overlay {
-
                         VStack {
-                            Text("Login")
-                                .font(.title)
-                                .shadow(radius: 6)
                             Spacer()
-
                             HStack {
                                 Text("E-Mail")
                                     .fontWeight(.thin)
@@ -41,6 +41,7 @@ struct LoginScreen: View {
                                 .textFieldStyle(.roundedBorder)
                                 .background(.clear)
                                 .padding(.horizontal)
+                                .focused($isInputActive)
 
                             HStack {
                                 Text("Password")
@@ -54,6 +55,7 @@ struct LoginScreen: View {
                                 .textFieldStyle(.roundedBorder)
                                 .background(.clear)
                                 .padding(.horizontal)
+                                .focused($isInputActive)
 
                             CustomButton(
                                 title: "Login",
@@ -72,15 +74,21 @@ struct LoginScreen: View {
                     }
             }
         }
-        .alert("Fehler", isPresented: .constant(errorManager.currentError != nil)) {
-            Button("OK", role: .cancel) { errorManager.clearError() }
-        } message: {
-            Text(errorManager.currentError ?? "Unbekannter Fehler")
+        .alert(item: $errorManager.currentError) { error in
+            Alert(
+                title: Text("Fehler"),
+                message: Text(error.message),
+                dismissButton: .default(Text("OK"), action: {
+                    errorManager.clearError()
+                })
+            )
         }
     }
 }
 
 #Preview {
     @Previewable @StateObject var vM: AuthViewModel = AuthViewModel()
+    @Previewable @StateObject var errorHandler: ErrorManager = ErrorManager.shared
     LoginScreen(vM: vM)
+        .environmentObject(errorHandler)
 }

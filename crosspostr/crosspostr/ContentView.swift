@@ -8,7 +8,6 @@ struct ContentView: View {
     @ObservedObject var postVM: CreateViewModel
     @ObservedObject var dashVM: DashboardViewModel
     @ObservedObject var createVM: CreateViewModel
-    @EnvironmentObject var errorManager: ErrorManager
     
     var body: some View {
         if authVM.isLoggedIn {
@@ -19,10 +18,10 @@ struct ContentView: View {
                 dashVM: dashVM,
                 createVM: createVM
             )
-            .environmentObject(errorManager)
+            .environmentObject(ErrorManager.shared)
         } else {
             WelcomeScreen(authVM: authVM)
-                .environmentObject(errorManager)
+                .environmentObject(ErrorManager.shared)
         }
     }
 }

@@ -33,6 +33,4 @@ struct FacebookLoginView: View {
             UIApplication.shared.open(url)
         }
     }
-    
-    
 }
