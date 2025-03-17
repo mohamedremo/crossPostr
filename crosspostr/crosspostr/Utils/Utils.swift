@@ -1,13 +1,13 @@
 import SwiftUI
 import SCSDKLoginKit
 import GoogleSignIn
+import OAuthSwift
 
 class Utils {
     static let shared: Utils = Utils()
 
     private init() {}
     
-
 
     // MARK: - UI Helpers
 
@@ -107,6 +107,9 @@ class Utils {
         
         if urlString.contains("fb501664873040786://auth") {
             Utils.shared.handleFacebookLogin(url: url) ///Facebook
+        } else if urlString.contains("crosspostr://callback") {
+            // Twitter OAuthFlow Rückruf
+            OAuthSwift.handle(url: url)
         } else if urlString.contains("snapkit") {
             SCSDKLoginClient.application(UIApplication.shared, open: url, options: [:]) ///Snapchat
         } else {

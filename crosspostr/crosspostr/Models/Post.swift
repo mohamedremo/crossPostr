@@ -213,7 +213,8 @@ enum PostStatus: String, Codable {
     case scheduled, published, failed
 }
 
-enum Platform: String, CaseIterable {
+enum Platform: String, CaseIterable, Hashable {
+    
     case instagram, twitter, facebook, snapchat
     
 

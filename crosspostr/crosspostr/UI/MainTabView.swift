@@ -22,7 +22,7 @@ struct MainTabView: View {
                     .environmentObject(ErrorManager.shared)
                 
             case .info:
-                Text("Info")
+                TwitterLoginView()
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)

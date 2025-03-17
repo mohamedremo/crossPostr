@@ -1,3 +1,4 @@
+import AVKit
 import PhotosUI
 import SwiftUI
 import AVKit
@@ -55,8 +56,9 @@ class CreateViewModel: ObservableObject {
     @Published var isUploading: Bool = false
     
     @Published var errorMessage = ""
-    
+
     private let repo = Repository.shared
+    private let socialManager = SocialManager.shared
 
     func togglePlatformSelection(_ platform: Platform) {
         if selectedPlatforms.contains(platform) {
@@ -70,7 +72,7 @@ class CreateViewModel: ObservableObject {
         images.removeAll()
         videoURLs.removeAll()
         videoPlayers.removeAll()
-        
+
         for item in selectedMedia {
             if let image = await loadImage(from: item) {
                 images.append(image)
@@ -84,16 +86,16 @@ class CreateViewModel: ObservableObject {
             }
         }
     }
-    
+
     func deleteVideo(url: URL) {
         videoURLs.removeAll(where: { $0 == url })
         videoPlayers.removeValue(forKey: url)
     }
-    
+
     func deleteImage(image: UIImage) {
         images.removeAll(where: { $0 == image })
     }
-    
+
     func uploadPostToSupabase() async {
         
         guard let currentUser = repo.currentUser else {
@@ -181,6 +183,49 @@ class CreateViewModel: ObservableObject {
         isUploading = false
         clear()
     }
+
+    func post() async {
+        // Prüfe, ob ein Post-Text eingegeben wurde
+        guard !postText.isEmpty && !selectedPlatforms.isEmpty  else {
+            errorMessage = "Der Post-Text darf nicht leer sein."
+            print(errorMessage)
+            return
+        }
+        
+        // Für jede ausgewählte Plattform prüfen wir individuelle Bedingungen
+        for platform in selectedPlatforms {
+            if let provider = OAuthProvider(rawValue: platform.rawValue) {
+                // Bei Instagram muss auch ein Bild oder Video vorhanden sein
+                if provider == .instagram {
+                    if images.isEmpty && videoURLs.isEmpty {
+                        let msg = "Instagram-Post erfordert ein Bild oder Video."
+                        errorMessage = msg
+                        print(msg)
+                        continue // Überspringe Instagram, wenn keine Medien vorhanden sind
+                    }
+                }
+                
+                // Erstelle den Post
+                let newPost: Post = Post(
+                    content: postText,
+                    createdAt: Date.now,
+                    metadata: "",
+                    platforms: commaifySelectedPlatforms(),
+                    scheduledAt: Date.distantFuture,
+                    status: "posted",
+                    userId: repo.currentUser?.uid ?? "Unknown"
+                )
+                
+                do {
+                    try await socialManager.post(content: newPost, to: provider)
+                    print("Post erfolgreich an \(provider.rawValue) gesendet.")
+                } catch {
+                    print("Fehler beim Posten auf \(provider.rawValue): \(error.localizedDescription)")
+                    errorMessage = "Fehler beim Posten auf \(provider.rawValue)."
+                }
+            }
+        }
+    }
     
     func uploadMediaToSupabaseStorage(media: MediaDTO, data: Data) async {
         do {
@@ -237,23 +282,27 @@ class CreateViewModel: ObservableObject {
         errorMessage = ""
         
     }
-    
+
     private func commaifySelectedPlatforms() -> String {
         selectedPlatforms.map { $0.rawValue }
             .joined(separator: ", ")
     }
-    
-    private func loadImage(from pickerItem: PhotosPickerItem) async -> UIImage? {
+
+    private func loadImage(from pickerItem: PhotosPickerItem) async -> UIImage?
+    {
         if let data = try? await pickerItem.loadTransferable(type: Data.self),
-           let image = UIImage(data: data) {
+            let image = UIImage(data: data)
+        {
             return image
         }
         return nil
     }
-    
+
     private func loadVideo(from pickerItem: PhotosPickerItem) async -> URL? {
         do {
-            if let videoData = try await pickerItem.loadTransferable(type: Data.self) {
+            if let videoData = try await pickerItem.loadTransferable(
+                type: Data.self)
+            {
                 let tempURL = FileManager.default.temporaryDirectory
                     .appendingPathComponent(UUID().uuidString)
                     .appendingPathExtension("mov")

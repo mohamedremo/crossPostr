@@ -5,7 +5,7 @@ struct AnimatedBackground: View {
 
     var body: some View {
         LinearGradient(
-            gradient: Gradient(colors: [Color.main2, Color.main3, Color.main1]),
+            gradient: Gradient(colors: [.main2, .main3, .main1]),
             startPoint: animateGradient ? .topLeading : .bottomTrailing,
             endPoint: animateGradient ? .bottomTrailing : .topLeading
         )

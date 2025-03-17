@@ -13,6 +13,7 @@
 		EC0B8E762D4248280099BC1C /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = EC0B8E752D4248280099BC1C /* Realtime */; };
 		EC0B8E782D4248280099BC1C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = EC0B8E772D4248280099BC1C /* Storage */; };
 		EC0B8E7A2D4248280099BC1C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = EC0B8E792D4248280099BC1C /* Supabase */; };
+		EC0DD5AE2D79BC62008CB056 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = EC0DD5AD2D79BC62008CB056 /* KeychainAccess */; };
 		EC37E5A72D4E24CE006967F1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EC37E5A62D4E24CE006967F1 /* GoogleService-Info.plist */; };
 		EC37E5AA2D4E2517006967F1 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = EC37E5A92D4E2517006967F1 /* GoogleSignIn */; };
 		EC37E5AC2D4E2517006967F1 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EC37E5AB2D4E2517006967F1 /* GoogleSignInSwift */; };
@@ -40,6 +41,7 @@
 		EC47D2F82D48E5FE00EF0846 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = EC47D2F72D48E5FE00EF0846 /* FirebaseStorage */; };
 		EC47D2FA2D48E5FE00EF0846 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = EC47D2F92D48E5FE00EF0846 /* FirebaseStorageCombine-Community */; };
 		EC47D2FC2D48E5FE00EF0846 /* FirebaseVertexAI in Frameworks */ = {isa = PBXBuildFile; productRef = EC47D2FB2D48E5FE00EF0846 /* FirebaseVertexAI */; };
+		EC59FAAB2D77274F0084FA8F /* OAuthSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EC59FAAA2D77274F0084FA8F /* OAuthSwift */; };
 		EC8A87152D688A840022652E /* SnapSDK in Frameworks */ = {isa = PBXBuildFile; productRef = EC8A87142D688A840022652E /* SnapSDK */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +85,7 @@
 				EC8A87152D688A840022652E /* SnapSDK in Frameworks */,
 				EC39FAE82D425BF90099A7BC /* Lottie in Frameworks */,
 				EC47D2E42D48E5FE00EF0846 /* FirebaseFirestore in Frameworks */,
+				EC0DD5AE2D79BC62008CB056 /* KeychainAccess in Frameworks */,
 				EC47D2CE2D48E5FE00EF0846 /* FirebaseAnalytics in Frameworks */,
 				EC47D2F02D48E5FE00EF0846 /* FirebaseMLModelDownloader in Frameworks */,
 				EC47D2F22D48E5FE00EF0846 /* FirebaseMessaging in Frameworks */,
@@ -100,6 +103,7 @@
 				EC47D2E62D48E5FE00EF0846 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				EC47D2FA2D48E5FE00EF0846 /* FirebaseStorageCombine-Community in Frameworks */,
 				EC0B8E782D4248280099BC1C /* Storage in Frameworks */,
+				EC59FAAB2D77274F0084FA8F /* OAuthSwift in Frameworks */,
 				EC47D2E82D48E5FE00EF0846 /* FirebaseFunctions in Frameworks */,
 				EC0B8E762D4248280099BC1C /* Realtime in Frameworks */,
 				EC47D2FC2D48E5FE00EF0846 /* FirebaseVertexAI in Frameworks */,
@@ -183,6 +187,8 @@
 				EC37E5A92D4E2517006967F1 /* GoogleSignIn */,
 				EC37E5AB2D4E2517006967F1 /* GoogleSignInSwift */,
 				EC8A87142D688A840022652E /* SnapSDK */,
+				EC59FAAA2D77274F0084FA8F /* OAuthSwift */,
+				EC0DD5AD2D79BC62008CB056 /* KeychainAccess */,
 			);
 			productName = crosspostr;
 			productReference = EC0490452D3E686600B793D5 /* crosspostr.app */;
@@ -218,6 +224,8 @@
 				EC47D2CC2D48E5FE00EF0846 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				EC37E5A82D4E2517006967F1 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				EC8A87132D688A830022652E /* XCRemoteSwiftPackageReference "snap-kit-spm" */,
+				EC59FAA92D77274F0084FA8F /* XCRemoteSwiftPackageReference "OAuthSwift" */,
+				EC0DD5AC2D79BC62008CB056 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EC0490462D3E686600B793D5 /* Products */;
@@ -472,6 +480,14 @@
 				minimumVersion = 2.5.1;
 			};
 		};
+		EC0DD5AC2D79BC62008CB056 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		EC37E5A82D4E2517006967F1 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -494,6 +510,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 11.7.0;
+			};
+		};
+		EC59FAA92D77274F0084FA8F /* XCRemoteSwiftPackageReference "OAuthSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OAuthSwift/OAuthSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
 			};
 		};
 		EC8A87132D688A830022652E /* XCRemoteSwiftPackageReference "snap-kit-spm" */ = {
@@ -536,6 +560,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EC0B8E6E2D4248280099BC1C /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		EC0DD5AD2D79BC62008CB056 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EC0DD5AC2D79BC62008CB056 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
 		EC37E5A92D4E2517006967F1 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -666,6 +695,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EC47D2CC2D48E5FE00EF0846 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseVertexAI;
+		};
+		EC59FAAA2D77274F0084FA8F /* OAuthSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EC59FAA92D77274F0084FA8F /* XCRemoteSwiftPackageReference "OAuthSwift" */;
+			productName = OAuthSwift;
 		};
 		EC8A87142D688A840022652E /* SnapSDK */ = {
 			isa = XCSwiftPackageProductDependency;
