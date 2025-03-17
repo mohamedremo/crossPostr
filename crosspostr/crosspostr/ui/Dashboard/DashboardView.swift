@@ -1,9 +1,3 @@
-//
-//  Dashboa.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 17.02.25.
-//
 import SwiftUI
 
 struct DashboardView: View {
@@ -17,53 +11,41 @@ struct DashboardView: View {
             ZStack {
                 AppTheme.mainBackground
                     .ignoresSafeArea(.all)
-                VStack {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(authVM.mainProfile?.fullName ?? "User")
-                                .font(.headline)
-                            Text("Welcome to crossPostr")
-                                .font(.caption)
+                
+                ScrollView {
+                    VStack(spacing: 6) {
+                        Button(action: {
+                            viewModel.showCreatePostSheet.toggle()
+                        }) {
+                            DashboardNewPostCard()
+                        }
+                        ForEach(viewModel.posts, id: \.id) { post in
+                            NavigationLink(destination: PostDetailView(vM: viewModel, post: post)) {
+                                DashboardCard(
+                                    post: post,
+                                    viewModel: viewModel
+                                )
+                            }
                         }
                         Spacer()
-                    }
-                    .padding()
-
-                    ScrollView {
-                        VStack(spacing: 6) {
-                            Button {
-                                viewModel.showCreatePostSheet.toggle()
-                            } label: {
-                                DashboardNewPostCard()
-                            }
-                            ForEach(viewModel.posts, id: \.id) { post in
-                                ZStack {
-                                    NavigationLink(
-                                        "",
-                                        destination: PostDetailView(
-                                            vM: viewModel, post: post)
-                                    )
-                                    .opacity(0.0)
-                                    DashboardCard(post: post, viewModel: viewModel)
-                                }
-                            }
-                            Spacer()
-                                .frame(height: 84)
-                        }
+                            .frame(height: 84)
                     }
                 }
                 .background(Color.clear)
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+            .navigationTitle("Dashboard")
         }
         .background(Color.clear)
         .alert(item: $errorManager.currentError) { error in
             Alert(
                 title: Text("Fehler"),
                 message: Text(error.message),
-                dismissButton: .default(Text("OK"), action: {
-                    errorManager.clearError()
-                })
+                dismissButton: .default(
+                    Text("OK"),
+                    action: {
+                        errorManager.clearError()
+                    })
             )
         }
         .onAppear {
@@ -72,14 +54,22 @@ struct DashboardView: View {
         .sheet(
             isPresented: $viewModel.showCreatePostSheet,
             content: {
-                CreateView(viewModel: createVM)
-                    .environmentObject(errorManager)
+                NavigationStack {
+                    CreateView(viewModel: createVM)
+                        .environmentObject(errorManager)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Fertig") {
+                                    viewModel.showCreatePostSheet = false
+                                }
+                            }
+                        }
+                }
             }
         )
         .overlay {
             //Hier ProgressView rein
         }
-        
     }
 }
 
@@ -121,6 +111,7 @@ struct DashboardNewPostCard: View {
 struct DashboardCard: View {
     @State var post: Post
     @ObservedObject var viewModel: DashboardViewModel
+    @State private var showDeleteAlert = false
 
     var body: some View {
         ZStack {
@@ -160,16 +151,18 @@ struct DashboardCard: View {
         }
         .cornerRadius(30)
         .padding(.horizontal, 20)
-        .swipeActions {
-            Button(role: .destructive) {
+        .onLongPressGesture {
+            showDeleteAlert = true
+        }
+        .alert("Diesen Beitrag löschen?", isPresented: $showDeleteAlert) {
+            Button("Löschen", role: .destructive) {
                 if let index = viewModel.posts.firstIndex(where: {
                     $0.id == post.id
                 }) {
                     viewModel.posts.remove(at: index)
                 }
-            } label: {
-                Label("Löschen", systemImage: "trash")
             }
+            Button("Abbrechen", role: .cancel) {}
         }
     }
 }
@@ -183,9 +176,8 @@ struct DashboardCard: View {
     @Previewable @StateObject var createVM: CreateViewModel =
         CreateViewModel()
     @Previewable @StateObject var errorHandler: ErrorManager =
-    ErrorManager.shared
+        ErrorManager.shared
 
     DashboardView(viewModel: viewModel, authVM: authVM, createVM: createVM)
         .environmentObject(errorHandler)
-
 }

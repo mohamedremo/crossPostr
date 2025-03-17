@@ -1,9 +1,3 @@
-//
-//  Untitled.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 17.02.25.
-//
 import SwiftUI
 
 @MainActor
@@ -23,21 +17,19 @@ class DashboardViewModel: ObservableObject {
         print("Successfully fetched local posts - \(posts)")
     }
     
-    ///essenziell für die darstellung der bilder die im cache zum jeweiligen post gespeichert ist
     func getMediaFilesForPost(_ post: Post) -> [URL] {
         guard let mediaId = post.mediaId else {
             return []
         }
         
-        var mediaURLs: [URL] = []
-        
         do {
-            mediaURLs = try repo.localRepository.getFiles(inFolderWith: mediaId)
+            // Liefert alle Dateien im Ordner für die gegebene mediaId
+            return try repo.localRepository.getFiles(inFolderWith: mediaId)
         } catch {
-            print(error.localizedDescription)
+            // Falls ein Fehler auftritt, geben wir ein leeres Array zurück
+            print("Fehler beim Lesen der Dateien: \(error.localizedDescription)")
+            return []
         }
-        
-        return mediaURLs
     }
 
     func fetchAllRemotes() async {

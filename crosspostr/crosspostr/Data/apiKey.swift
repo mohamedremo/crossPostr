@@ -1,10 +1,3 @@
-//
-//  apiKey.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 17.02.25.
-//
-
 enum apiKey: String {
 
     case supabase =

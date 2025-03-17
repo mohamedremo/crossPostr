@@ -1,9 +1,3 @@
-//
-//  PostDTO.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 18.02.25.
-//
 import Foundation
 
 struct PostDTO: Codable, Identifiable, Sendable {

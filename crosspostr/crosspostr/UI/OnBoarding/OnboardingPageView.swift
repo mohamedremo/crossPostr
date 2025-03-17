@@ -1,9 +1,3 @@
-//
-//  OnboardingPageView.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 23.02.25.
-//
 import SwiftUI
 
 struct OnboardingPageView: View {

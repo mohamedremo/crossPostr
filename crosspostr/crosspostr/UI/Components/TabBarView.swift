@@ -5,6 +5,7 @@ enum TabBarPage: CaseIterable, Identifiable {
     case home
     case create
     case settings
+    case info
 
     var label: String {
         switch self {
@@ -14,6 +15,8 @@ enum TabBarPage: CaseIterable, Identifiable {
             return "Create"
         case .settings:
             return "Settings"
+        case .info:
+            return "Info"
         }
     }
 
@@ -25,6 +28,8 @@ enum TabBarPage: CaseIterable, Identifiable {
             return "plus.circle"
         case .settings:
             return "gear"
+        case .info:
+            return "info.circle"
         }
     }
 
@@ -45,26 +50,22 @@ struct TabBarView<Content: View>: View {
                 content()
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
         .overlay(alignment: .bottom) {
             HStack(spacing: 40) {
                 ForEach(TabBarPage.allCases) { tab in
                     TabButton(vM: vM, tab: tab)
                 }
             }
-            .padding()
-            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .padding(.horizontal, 24)
+            .frame(maxWidth: .infinity, minHeight: 70, maxHeight: 70)
             .background(Material.ultraThinMaterial)
-            .clipShape(Capsule())
+            .cornerRadius(30)
             .padding(.horizontal)
-            .padding(.bottom, 1)
-            .shadow(color: .black.opacity(0.2), radius: 5, y: 5)
-            .background {
-                Color.white
-                    .opacity(0.8)
-                    .ignoresSafeArea()
-                    .blur(radius: 10)
-            }
+            .padding(.bottom, 10)
+            .shadow(color: .black.opacity(0.1), radius: 5, y: 5)
+            .animation(.easeInOut(duration: 0.3), value: vM.selectedPage)
         }
     }
 }
@@ -77,13 +78,18 @@ struct TabButton: View {
         VStack(spacing: 8) {
             Image(systemName: tab.image)
                 .font(.title3)
-                .fontWeight(tab == vM.selectedPage ? .bold : .regular)
+                .fontWeight(tab == vM.selectedPage ? .black : .regular)
                 .foregroundStyle(AppTheme.mainBackground)
+
             Text(tab.label)
-                .font(.footnote)
+                .font(.caption)
+                .opacity(tab == vM.selectedPage ? 1.0 : 0.8)
         }
+        .frame(height: 50)
+        .frame(maxWidth: .infinity, minHeight: 70, maxHeight: 70)
+        .contentShape(Rectangle())
         .onTapGesture {
-            withAnimation(.easeInOut){
+            withAnimation(.easeInOut(duration: 0.25)) {
                 vM.selectedPage = tab
             }
         }
@@ -99,11 +105,14 @@ class TabBarViewModel: ObservableObject {
     @Previewable @StateObject var dashboardVM = DashboardViewModel()
     @Previewable @StateObject var authVM = AuthViewModel()
     @Previewable @StateObject var createVM: CreateViewModel = CreateViewModel()
+    @Previewable @StateObject var errorHandler = ErrorManager.shared
     TabBarView(vM: vM) {
         switch vM.selectedPage {
         case .home: DashboardView(viewModel: dashboardVM, authVM: authVM,createVM: createVM)
+                .environmentObject(errorHandler)
         case .create: Text("Create")
         case .settings: Text("Settings")
+        case .info: Text("Info")
         }
     }
 }

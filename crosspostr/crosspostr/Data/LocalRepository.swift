@@ -1,9 +1,3 @@
-//
-//  LocalRepository.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 19.02.25.
-//
 import Foundation
 import SwiftData
 import UIKit
@@ -87,6 +81,26 @@ class LocalRepository {
         try imageData.write(to: fileURL)
         print("Successfully stored image at \(fileURL)")
         return fileURL
+    }
+    
+    // Mehrere Bilder ablegen
+    func storeImagesInCache(_ images: [UIImage], id: UUID) throws -> [URL] {
+        var storedURLs: [URL] = []
+        for image in images {
+            let storedURL = try storeImageInCache(image, id: id)
+            storedURLs.append(storedURL)
+        }
+        return storedURLs
+    }
+    
+    // Mehrere Videos ablegen
+    func storeVideosInCache(_ videoURLs: [URL], id: UUID) throws -> [URL] {
+        var storedURLs: [URL] = []
+        for videoURL in videoURLs {
+            let storedURL = try storeVideoInCache(videoURL, id: id)
+            storedURLs.append(storedURL)
+        }
+        return storedURLs
     }
     
     func storeVideoInCache(_ videoURL: URL, id: UUID) throws -> URL {
@@ -187,10 +201,27 @@ class LocalRepository {
                     media.remoteURL = uploadedURL
                     try? self.modelContainer.mainContext.save()
                     
-                    // Lösche den kompletten Ordner im Cache, der unter der UUID gespeichert wurde
-                    if let folderURL = folderURL(for: mediaDTO.id) {
-                        try? FileManager.default.removeItem(at: folderURL)
-                        print("🗑 Ordner \(folderURL.lastPathComponent) gelöscht.")
+                    if let fileURL = URL(string: media.localPath) {
+                        // Lösche nur die hochgeladene Datei
+                        do {
+                            try FileManager.default.removeItem(at: fileURL)
+                            print("🗑 Datei \(fileURL.lastPathComponent) gelöscht.")
+                        } catch {
+                            print("Fehler beim Löschen der Datei: \(error.localizedDescription)")
+                        }
+                        
+                        // Prüfe, ob der Ordner jetzt leer ist. Wenn ja, lösche den Ordner.
+                        if let folderURL = folderURL(for: mediaDTO.id) {
+                            do {
+                                let remainingFiles = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
+                                if remainingFiles.isEmpty {
+                                    try FileManager.default.removeItem(at: folderURL)
+                                    print("🗑 Ordner \(folderURL.lastPathComponent) gelöscht, da er jetzt leer ist.")
+                                }
+                            } catch {
+                                print("Fehler beim Überprüfen/Entfernen des Ordners: \(error.localizedDescription)")
+                            }
+                        }
                     }
                     
                     print("🟢 Datei erfolgreich hochgeladen: \(uploadedURL)")
@@ -276,16 +307,3 @@ class LocalRepository {
         return cacheURL.appendingPathComponent(id.uuidString)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

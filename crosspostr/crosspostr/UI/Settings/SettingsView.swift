@@ -1,9 +1,3 @@
-//
-//  SettingsView.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 23.02.25.
-//
 import SwiftUI
 import PhotosUI
 
@@ -12,7 +6,6 @@ struct SettingsView: View {
     @AppStorage("facebook_access_token") var fbToken: String = ""
     @State var selectedItem: PhotosPickerItem? = nil
     var image: UIImage? = nil
-    
     @EnvironmentObject var errorManager: ErrorManager
     
     var body: some View {
@@ -38,7 +31,6 @@ struct SettingsView: View {
                         Text("Bild ändern")
                             .font(.callout)
                     }
-            
                 }
                 
                 VStack(alignment: .leading) {
@@ -52,10 +44,16 @@ struct SettingsView: View {
             Form {
                 Section("Persönliche Einstellungen") {
                     TextField("Facebook Access Token", text: $fbToken)
-                    Button("Logout") { vm.logout() }
+                    Button("Logout") {
+                        vm.logout()
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-                
             }
+            .scrollContentBackground(.hidden)
+            .background(.clear)
+            .cornerRadius(12)
+
         }
         .alert(item: $errorManager.currentError) { error in
             Alert(
@@ -66,10 +64,13 @@ struct SettingsView: View {
                 })
             )
         }
+        .dismissKeyboardOnTap()
     }
 }
 
 #Preview {
     @Previewable @StateObject var vm: AuthViewModel = AuthViewModel()
+    @Previewable @StateObject var errorHandler: ErrorManager = ErrorManager.shared
     SettingsView(vm: vm)
+        .environmentObject(errorHandler)
 }

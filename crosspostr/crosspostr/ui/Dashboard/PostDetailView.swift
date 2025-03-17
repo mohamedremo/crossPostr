@@ -1,9 +1,3 @@
-//
-//  PostDetailView.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 20.02.25.
-//
 import SwiftUI
 import AVKit
 import PhotosUI
@@ -82,13 +76,13 @@ struct MediaListView: View {
         ScrollView(axes, showsIndicators: false) {
             LazyHStack(spacing: 8.0) {
                 ForEach(urls, id: \.self) { url in
-                    if url.pathExtension.lowercased() == "mp4" {
+                    if ["mp4", "mov"].contains(url.pathExtension.lowercased()) {
                         // Video anzeigen und automatisch abspielen
                         VideoPlayerView(url: url)
                             .aspectRatio(1.0, contentMode: .fit)
                             .cornerRadius(8)
                             .frame(height: 300)
-                    } else if url.pathExtension.lowercased() == "jpg" || url.pathExtension.lowercased() == "jpeg" {
+                    } else if ["jpg", "jpeg", "png", "heic"].contains(url.pathExtension.lowercased()) {
                         // Bild anzeigen
                         if let imageData = try? Data(contentsOf: url),
                            let uiImage = UIImage(data: imageData) {

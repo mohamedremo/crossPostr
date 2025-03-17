@@ -1,9 +1,3 @@
-//
-//  CustomVideoPlayer.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 16.02.25.
-//
 import AVKit
 import SwiftUI
 

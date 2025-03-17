@@ -1,9 +1,10 @@
-//
-//  Repository.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 28.01.25.
-//
+import Firebase
+import FirebaseAuth
+import Foundation
+import GoogleSignIn
+import Supabase
+import SwiftData
+import SwiftUI
 
 // MARK: - Repository Class
 /**
@@ -29,13 +30,6 @@
  - Mohamed Remo
  - Version: 1.0
  */
-import Firebase
-import FirebaseAuth
-import Foundation
-import GoogleSignIn
-import Supabase
-import SwiftData
-import SwiftUI
 
 @MainActor
 class Repository {

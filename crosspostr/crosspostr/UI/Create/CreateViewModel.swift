@@ -1,4 +1,6 @@
-
+import PhotosUI
+import SwiftUI
+import AVKit
 //  MARK: - PostViewModel Class
 /**
  The `PostViewModel` class manages the state and logic for creating a new post in the crosspostr app.
@@ -34,10 +36,6 @@
  - Mohamed Remo
  - Version: 1.0
  */
- 
-import PhotosUI
-import SwiftUI
-import AVKit
 
 @MainActor
 class CreateViewModel: ObservableObject {
@@ -107,38 +105,55 @@ class CreateViewModel: ObservableObject {
         
         var medias: [MediaDTO] = []
         
+        // Bilder hochladen
         do {
-            for image in images {
-                let imageUrl = try repo.localRepository.storeImageInCache(image, id: newMediaId)
+            isUploading = true
+            let imageURLs = try repo.localRepository.storeImagesInCache(images, id: newMediaId)
+            for imageURL in imageURLs {
                 let newImage = MediaDTO(
                     id: newMediaId,
-                    devicePath: imageUrl.absoluteString,
+                    devicePath: imageURL.absoluteString,
                     url: "",
                     type: .image,
                     uploadedAt: Date.now
-                    )
+                )
                 medias.append(newImage)
-                try await repo.remoteRepository.insertMediaRemote(newMedia: newImage)
+
+                // Versuche, die Datei als Data zu laden
+                if let data = try? Data(contentsOf: imageURL) {
+                    // Jetzt übergeben wir sie an unsere Uploadfunktion
+                    await uploadMediaToSupabaseStorage(media: newImage, data: data)
+                } else {
+                    print("Fehler: Konnte das Bild nicht als Data laden: \(imageURL)")
+                }
             }
+            isUploading = false
         } catch {
             print(error.localizedDescription)
         }
-        
+
+        // Videos hochladen
         do {
-            for video in videoURLs {
-                let videoURL = try repo.localRepository.storeVideoInCache(video, id: newMediaId)
+            isUploading = true
+            let videoCacheURLs = try repo.localRepository.storeVideosInCache(videoURLs, id: newMediaId)
+            for videoURL in videoCacheURLs {
                 let newVideo = MediaDTO(
                     id: newMediaId,
                     devicePath: videoURL.absoluteString,
                     url: "",
                     type: .video,
                     uploadedAt: Date.now
-                    )
+                )
                 medias.append(newVideo)
-                isUploading = true
-                try await repo.remoteRepository.insertMediaRemote(newMedia: newVideo)
-                isUploading = false
+
+                // Datei als Data laden
+                if let data = try? Data(contentsOf: videoURL) {
+                    await uploadMediaToSupabaseStorage(media: newVideo, data: data)
+                } else {
+                    print("Fehler: Konnte Video nicht als Data laden: \(videoURL)")
+                }
             }
+            isUploading = false
         } catch {
             print(error.localizedDescription)
         }
@@ -170,11 +185,43 @@ class CreateViewModel: ObservableObject {
     func uploadMediaToSupabaseStorage(media: MediaDTO, data: Data) async {
         do {
             guard let uid = repo.currentUser?.uid else { return }
-            
-            try await repo.remoteRepository.uploadFile(bucket: "media-files", path: "\(uid)/", fileData: data)
-            try await repo.remoteRepository.insertMediaRemote(newMedia: media)
+
+            // Bestimme die Dateiendung abhängig vom Medientyp
+            let fileExt: String
+            switch media.type {
+            case .image:
+                fileExt = "jpg"
+            case .video:
+                fileExt = "mp4"
+            default:
+                fileExt = "bin" // Fallback
+            }
+
+            // Erzeuge einen eindeutigen Dateinamen mit UUID
+            let uniqueFileName = "\(UUID().uuidString).\(fileExt)"
+
+            // Zusammengesetzter Pfad in Supabase
+            let filePath = "\(uid)/\(uniqueFileName)"
+
+            // Datei in Supabase hochladen
+            try await repo.remoteRepository.uploadFile(
+                bucket: "media-files",
+                path: filePath,
+                fileData: data
+            )
+
+            // Falls du in Supabase einen öffentlichen Bucket hast, kannst du die URL so konstruieren:
+            let publicURL = "https://<supabase_url>/storage/v1/object/public/media-files/\(filePath)"
+
+            // Aktualisiere das media-Objekt
+            var updatedMedia = media
+            updatedMedia.url = publicURL
+
+            // Jetzt Insert in deine DB
+            try await repo.remoteRepository.insertMediaRemote(newMedia: updatedMedia)
+
         } catch {
-            print(error.localizedDescription)
+            print("Fehler beim Upload in Supabase Storage: \(error.localizedDescription)")
         }
     }
 

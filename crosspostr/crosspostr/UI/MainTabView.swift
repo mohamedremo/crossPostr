@@ -20,6 +20,9 @@ struct MainTabView: View {
             case .settings:
                 SettingsView(vm: authVM )
                     .environmentObject(ErrorManager.shared)
+                
+            case .info:
+                Text("Info")
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)

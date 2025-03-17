@@ -12,8 +12,8 @@ struct LoginScreen: View {
                 HStack {
                     Spacer()
                     Image(.avatarRight)
-                        .offset(y: isInputActive ?  height * 0.02 : height * 0.2)
-                        
+                        .offset(y: isInputActive ? height * 0.02 : height * 0.2)
+                        .animation(.easeInOut(duration: 0.3), value: isInputActive)
                 }
                 Spacer()
                 RoundedRectangle(cornerRadius: 60)
@@ -74,6 +74,7 @@ struct LoginScreen: View {
                     }
             }
         }
+        .dismissKeyboardOnTap()
         .alert(item: $errorManager.currentError) { error in
             Alert(
                 title: Text("Fehler"),

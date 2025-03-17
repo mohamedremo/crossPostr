@@ -93,6 +93,7 @@ struct RegisterScreen: View {
                     }
             }
         }
+        .dismissKeyboardOnTap()
         .alert(item: $errorManager.currentError) { error in
             Alert(
                 title: Text("Fehler"),

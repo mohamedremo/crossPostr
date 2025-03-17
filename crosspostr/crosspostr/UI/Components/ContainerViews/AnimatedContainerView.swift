@@ -1,9 +1,3 @@
-//
-//  AnimatedBackgroundView.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 28.01.25.
-//
 import Foundation
 import SwiftUI
 

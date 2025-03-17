@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct CustomButton: View {
     var title: String
     var action: () -> Void

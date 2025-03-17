@@ -1,9 +1,3 @@
-//
-//  AnimatedContainerViewModel.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 02.02.25.
-
 import Foundation
 import SwiftUI
 

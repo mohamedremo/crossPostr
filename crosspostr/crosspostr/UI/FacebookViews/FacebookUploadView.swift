@@ -1,10 +1,3 @@
-//
-//  FacebookFLow.swift
-//  crosspostr
-//
-//  Created by Mohamed Remo on 21.02.25.
-//
-
 import SwiftUI
 import PhotosUI
 
