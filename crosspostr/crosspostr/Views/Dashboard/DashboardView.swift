@@ -9,8 +9,8 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                AppTheme.mainBackground
-                    .ignoresSafeArea(.all)
+//                AppTheme.mainBackground
+//                    .ignoresSafeArea(.all)
                 
                 ScrollView {
                     VStack(spacing: 6) {

@@ -2,6 +2,7 @@ import FirebaseAuth
 import Foundation
 import GoogleSignIn
 import GoogleSignInSwift
+import SwiftUI
 
 /**
  The `AuthViewModel` class manages authentication logic, including email/password
@@ -37,6 +38,7 @@ class AuthViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var passwordRetry: String = ""
+    
     
     /// Checks if a user is currently logged in
     var isLoggedIn: Bool {

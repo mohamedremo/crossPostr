@@ -95,7 +95,10 @@ struct CreateView: View {
             }
 
             LiquidMetalButton {
-                Task { await viewModel.uploadPostToSupabase() }
+                Task {
+//                    await viewModel.uploadPostToSupabase()
+                    await viewModel.postToTwitter()
+                }
             }
             
             Spacer()
@@ -166,8 +169,6 @@ struct PlatformSelectionView: View {
         case .instagram:
             // Instagram-typischer Gradient
             return AnyView(LinearGradient(gradient: Gradient(colors: [Color.purple, Color.orange]), startPoint: .topLeading, endPoint: .bottomTrailing))
-        default:
-            return AnyView(Color.purple)
         }
     }
 }

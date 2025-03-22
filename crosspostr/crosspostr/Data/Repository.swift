@@ -1,10 +1,19 @@
+//
+//  Repository.swift
+//  crossPostr
+//
+//  Beschreibung: Verwaltung der gesamten Datenlage der App inklusive Kommunikation mit Supabase, Firebase und GoogleSignIn.
+//  Author: Mohamed Remo
+//  Version: 1.0
+//
+
+import Foundation
+import SwiftUI
+import SwiftData
 import Firebase
 import FirebaseAuth
-import Foundation
 import GoogleSignIn
 import Supabase
-import SwiftData
-import SwiftUI
 
 // MARK: - Repository Class
 /**
@@ -45,13 +54,14 @@ class Repository {
     /**
         The currenUser who is Logged in the App.
         delivered by a Computed Property
-    
      */
     var currentUser: FirebaseAuth.User? {
         return authClient.currentUser
     }
     
     var mainProfile: Profile? = nil
+
+    // MARK: - Authentication Methods
 
     /**
         Logs in a user using their email and password through Firebase Auth.
@@ -130,21 +140,22 @@ class Repository {
         try await authClient.signIn(with: credential)
 
         // Optional: Create a profile instance
-        let profile = Profile(
+        mainProfile = Profile(
             id: signInResult.user.userID ?? UUID().uuidString,
             firstName: signInResult.user.profile?.givenName ?? "Unknown",
             fullName: signInResult.user.profile?.name ?? "Unknown",
             email: signInResult.user.profile?.email ?? "no-email@example.com",
             birthDate: nil,
-            profileImageUrl: nil
+            profileImageUrl: ""
         )
-    
         
+    
+
 
         print(
             "Google Sign-In successful. Firebase User: \(self.authClient.currentUser?.email ?? "No Email")"
         )
-        print("New Profile \(profile) has been created.")
+        print("New Profile \(mainProfile) has been created.")
     }
     
     /**

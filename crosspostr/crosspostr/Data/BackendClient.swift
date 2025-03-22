@@ -1,5 +1,14 @@
-import FirebaseAuth
+//
+//  BackendClient.swift
+//  crossPostr
+//
+//  Beschreibung: Singleton-Client zur Verwaltung der Backend-Dienste (Supabase & Firebase).
+//  Author: Mohamed Remo
+//  Version: 1.0
+//
+
 import Foundation
+import FirebaseAuth
 import Supabase
 
 /**
@@ -20,13 +29,13 @@ struct BackendClient {
     /// The singleton instance of the `BackendClient`.
 
     private init() {}
-    /// ensures singleton
+    /// Privater Initializer zur Gewährleistung des Singleton-Patterns.
 
     // MARK: - Supabase
     /// The `SupabaseClient` instance to interact with Supabase backend services.
     let supabase = SupabaseClient(
-        supabaseURL: URL(string: apiHost.supabase.rawValue)!,
-        supabaseKey: apiKey.supabase.rawValue)
+        supabaseURL: URL(string: APIHost.supabase.rawValue)!,
+        supabaseKey: APIKey.supabase.rawValue)
 
     // MARK: - Firebase
     /// The `Auth` instance from Firebase used for user authentication.

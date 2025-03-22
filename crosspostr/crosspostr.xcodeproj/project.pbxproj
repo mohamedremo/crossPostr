@@ -14,7 +14,6 @@
 		EC0B8E782D4248280099BC1C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = EC0B8E772D4248280099BC1C /* Storage */; };
 		EC0B8E7A2D4248280099BC1C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = EC0B8E792D4248280099BC1C /* Supabase */; };
 		EC0DD5AE2D79BC62008CB056 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = EC0DD5AD2D79BC62008CB056 /* KeychainAccess */; };
-		EC37E5A72D4E24CE006967F1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EC37E5A62D4E24CE006967F1 /* GoogleService-Info.plist */; };
 		EC37E5AA2D4E2517006967F1 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = EC37E5A92D4E2517006967F1 /* GoogleSignIn */; };
 		EC37E5AC2D4E2517006967F1 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EC37E5AB2D4E2517006967F1 /* GoogleSignInSwift */; };
 		EC39FAE82D425BF90099A7BC /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = EC39FAE72D425BF90099A7BC /* Lottie */; };
@@ -43,15 +42,17 @@
 		EC47D2FC2D48E5FE00EF0846 /* FirebaseVertexAI in Frameworks */ = {isa = PBXBuildFile; productRef = EC47D2FB2D48E5FE00EF0846 /* FirebaseVertexAI */; };
 		EC59FAAB2D77274F0084FA8F /* OAuthSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EC59FAAA2D77274F0084FA8F /* OAuthSwift */; };
 		EC8A87152D688A840022652E /* SnapSDK in Frameworks */ = {isa = PBXBuildFile; productRef = EC8A87142D688A840022652E /* SnapSDK */; };
+		ECA9A87C2D89701100D8E407 /* Pulse in Frameworks */ = {isa = PBXBuildFile; productRef = ECA9A87B2D89701100D8E407 /* Pulse */; };
+		ECA9A87E2D89701100D8E407 /* PulseProxy in Frameworks */ = {isa = PBXBuildFile; productRef = ECA9A87D2D89701100D8E407 /* PulseProxy */; };
+		ECA9A8802D89701100D8E407 /* PulseUI in Frameworks */ = {isa = PBXBuildFile; productRef = ECA9A87F2D89701100D8E407 /* PulseUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EC0490452D3E686600B793D5 /* crosspostr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = crosspostr.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC37E5A62D4E24CE006967F1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EC37E5AE2D4E2B42006967F1 /* Exceptions for "crosspostr" folder in "crosspostr" target */ = {
+		EC82E6062D89CE7300DC4FDD /* Exceptions for "crosspostr" folder in "crosspostr" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -64,7 +65,7 @@
 		EC0490472D3E686600B793D5 /* crosspostr */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				EC37E5AE2D4E2B42006967F1 /* Exceptions for "crosspostr" folder in "crosspostr" target */,
+				EC82E6062D89CE7300DC4FDD /* Exceptions for "crosspostr" folder in "crosspostr" target */,
 			);
 			path = crosspostr;
 			sourceTree = "<group>";
@@ -94,10 +95,13 @@
 				EC0B8E722D4248280099BC1C /* Functions in Frameworks */,
 				EC47D2DA2D48E5FE00EF0846 /* FirebaseAuthCombine-Community in Frameworks */,
 				EC47D2EA2D48E5FE00EF0846 /* FirebaseFunctionsCombine-Community in Frameworks */,
+				ECA9A87E2D89701100D8E407 /* PulseProxy in Frameworks */,
+				ECA9A87C2D89701100D8E407 /* Pulse in Frameworks */,
 				EC37E5AA2D4E2517006967F1 /* GoogleSignIn in Frameworks */,
 				EC47D2E02D48E5FE00EF0846 /* FirebaseDatabase in Frameworks */,
 				EC47D2D02D48E5FE00EF0846 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				EC0B8E7A2D4248280099BC1C /* Supabase in Frameworks */,
+				ECA9A8802D89701100D8E407 /* PulseUI in Frameworks */,
 				EC37E5AC2D4E2517006967F1 /* GoogleSignInSwift in Frameworks */,
 				EC0B8E702D4248280099BC1C /* Auth in Frameworks */,
 				EC47D2E62D48E5FE00EF0846 /* FirebaseFirestoreCombine-Community in Frameworks */,
@@ -122,7 +126,6 @@
 			children = (
 				EC0490472D3E686600B793D5 /* crosspostr */,
 				EC0490462D3E686600B793D5 /* Products */,
-				EC37E5A62D4E24CE006967F1 /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -189,6 +192,9 @@
 				EC8A87142D688A840022652E /* SnapSDK */,
 				EC59FAAA2D77274F0084FA8F /* OAuthSwift */,
 				EC0DD5AD2D79BC62008CB056 /* KeychainAccess */,
+				ECA9A87B2D89701100D8E407 /* Pulse */,
+				ECA9A87D2D89701100D8E407 /* PulseProxy */,
+				ECA9A87F2D89701100D8E407 /* PulseUI */,
 			);
 			productName = crosspostr;
 			productReference = EC0490452D3E686600B793D5 /* crosspostr.app */;
@@ -226,6 +232,7 @@
 				EC8A87132D688A830022652E /* XCRemoteSwiftPackageReference "snap-kit-spm" */,
 				EC59FAA92D77274F0084FA8F /* XCRemoteSwiftPackageReference "OAuthSwift" */,
 				EC0DD5AC2D79BC62008CB056 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				ECA9A87A2D89701100D8E407 /* XCRemoteSwiftPackageReference "Pulse" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EC0490462D3E686600B793D5 /* Products */;
@@ -242,7 +249,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC37E5A72D4E24CE006967F1 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +534,14 @@
 				minimumVersion = 2.5.0;
 			};
 		};
+		ECA9A87A2D89701100D8E407 /* XCRemoteSwiftPackageReference "Pulse" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Pulse";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -705,6 +719,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EC8A87132D688A830022652E /* XCRemoteSwiftPackageReference "snap-kit-spm" */;
 			productName = SnapSDK;
+		};
+		ECA9A87B2D89701100D8E407 /* Pulse */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ECA9A87A2D89701100D8E407 /* XCRemoteSwiftPackageReference "Pulse" */;
+			productName = Pulse;
+		};
+		ECA9A87D2D89701100D8E407 /* PulseProxy */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ECA9A87A2D89701100D8E407 /* XCRemoteSwiftPackageReference "Pulse" */;
+			productName = PulseProxy;
+		};
+		ECA9A87F2D89701100D8E407 /* PulseUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ECA9A87A2D89701100D8E407 /* XCRemoteSwiftPackageReference "Pulse" */;
+			productName = PulseUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

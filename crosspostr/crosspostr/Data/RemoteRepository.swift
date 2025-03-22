@@ -1,3 +1,12 @@
+//
+//  RemoteRepository.swift
+//  crossPostr
+//
+//  Beschreibung: Verwaltung der Remote-Datenbank-Operationen (Posts und Media) sowie Storage-Funktionen.
+//  Author: Mohamed Remo
+//  Version: 1.0
+//
+
 import Foundation
 import Supabase
 import Storage

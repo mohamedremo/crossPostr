@@ -96,9 +96,7 @@ struct TabButton: View {
     }
 }
 
-class TabBarViewModel: ObservableObject {
-    @Published var selectedPage: TabBarPage = .home
-}
+
 
 #Preview {
     @Previewable @StateObject var vM = TabBarViewModel()

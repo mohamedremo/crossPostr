@@ -95,6 +95,27 @@ class CreateViewModel: ObservableObject {
     func deleteImage(image: UIImage) {
         images.removeAll(where: { $0 == image })
     }
+    
+    func postToTwitter() async {
+        let newPost = Post(
+            content: postText ,
+            createdAt: Date.now,
+            id: UUID(),
+            mediaId: UUID(),
+            metadata: "",
+            platforms: commaifySelectedPlatforms(),
+            scheduledAt: Date.distantPast,
+            status: "posted",
+            userId: "UUID()"
+        )
+        print(newPost)
+        do {
+            try await socialManager.post(post: newPost, to: .twitter)
+            print("Tweet erfolgreich gesendet.")
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 
     func uploadPostToSupabase() async {
         
@@ -217,7 +238,7 @@ class CreateViewModel: ObservableObject {
                 )
                 
                 do {
-                    try await socialManager.post(content: newPost, to: provider)
+                    try await socialManager.post(post: newPost, to: provider)
                     print("Post erfolgreich an \(provider.rawValue) gesendet.")
                 } catch {
                     print("Fehler beim Posten auf \(provider.rawValue): \(error.localizedDescription)")

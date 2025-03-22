@@ -1,11 +1,23 @@
+//
+//  LocalRepository.swift
+//  crossPostr
+//
+//  Beschreibung: Lokale Repository-Klasse zur Verwaltung von Datenoperationen und File-Management.
+//  Author: Mohamed Remo
+//  Version: 1.0
+//
+
 import Foundation
-import SwiftData
 import UIKit
+import SwiftData
 
 @MainActor
 class LocalRepository {
+    
+    // MARK: - Properties
     private let modelContainer: ModelContainer
 
+    // MARK: - Initialization
     init() {
         do {
             let schema = Schema([Post.self, Media.self])
@@ -18,6 +30,7 @@ class LocalRepository {
         }
     }
 
+    // MARK: - Core Data Operations
     func insert(_ post: Post) throws {
         modelContainer.mainContext.insert(post)
         try modelContainer.mainContext.save()
@@ -33,10 +46,11 @@ class LocalRepository {
         return try! modelContainer.mainContext.fetch(fetchDescriptor)
     }
 
+    // MARK: - Media Upload
     func uploadMediaToSupabase(mediaDTO: MediaDTO, imageData: Data) async -> String? {
         
-        let supabaseURL = apiHost.supabase
-        let supabaseKey = apiKey.supabase
+        let supabaseURL = APIHost.supabase
+        let supabaseKey = APIKey.supabase
         let bucketName = "media-files"
         let fileName = "\(mediaDTO.id.uuidString).jpg"
         
@@ -67,104 +81,6 @@ class LocalRepository {
         }
     }
 
-    func storeImageInCache(_ image: UIImage, id: UUID) throws -> URL {
-        let folderURL = try createFolder(with: id)
-        // Optional: Einzigartigen Dateinamen innerhalb des Ordners generieren
-        let fileName = "image-\(UUID().uuidString).jpg"
-        let fileURL = folderURL.appendingPathComponent(fileName)
-        
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-            throw NSError(domain: "storeImageInCache", code: 1, userInfo: [
-                NSLocalizedDescriptionKey: "Bild konnte nicht konvertiert werden."
-            ])
-        }
-        try imageData.write(to: fileURL)
-        print("Successfully stored image at \(fileURL)")
-        return fileURL
-    }
-    
-    // Mehrere Bilder ablegen
-    func storeImagesInCache(_ images: [UIImage], id: UUID) throws -> [URL] {
-        var storedURLs: [URL] = []
-        for image in images {
-            let storedURL = try storeImageInCache(image, id: id)
-            storedURLs.append(storedURL)
-        }
-        return storedURLs
-    }
-    
-    // Mehrere Videos ablegen
-    func storeVideosInCache(_ videoURLs: [URL], id: UUID) throws -> [URL] {
-        var storedURLs: [URL] = []
-        for videoURL in videoURLs {
-            let storedURL = try storeVideoInCache(videoURL, id: id)
-            storedURLs.append(storedURL)
-        }
-        return storedURLs
-    }
-    
-    func storeVideoInCache(_ videoURL: URL, id: UUID) throws -> URL {
-        let folderURL = try createFolder(with: id)
-        let fileName = "video-\(UUID().uuidString).mp4"
-        let destinationURL = folderURL.appendingPathComponent(fileName)
-        
-        // Bei temporären URLs aus dem Picker evtl. SecurityScopedResource beachten
-        var videoData: Data
-        if videoURL.startAccessingSecurityScopedResource() {
-            defer { videoURL.stopAccessingSecurityScopedResource() }
-            videoData = try Data(contentsOf: videoURL)
-        } else {
-            videoData = try Data(contentsOf: videoURL)
-        }
-        
-        try videoData.write(to: destinationURL)
-        print("Successfully stored video at \(destinationURL)")
-        return destinationURL
-    }
-    
-    private func createFolder(with id: UUID) throws -> URL {
-        // 1) Hole das Cache-Verzeichnis
-        guard let cacheURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
-            throw NSError(
-                domain: "LocalRepository",
-                code: 0,
-                userInfo: [NSLocalizedDescriptionKey: "Cache-Verzeichnis nicht gefunden."]
-            )
-        }
-        // 2) Erzeuge den Ordnerpfad basierend auf der UUID
-        let folderURL = cacheURL.appendingPathComponent(id.uuidString)
-        
-        // 3) Falls der Ordner noch nicht existiert, erstelle ihn
-        if !FileManager.default.fileExists(atPath: folderURL.path) {
-            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
-        }
-        print("Created new Folder in Cache for Media with ID \(id.uuidString)")
-        return folderURL
-    }
-
-    // Basisfunktion, die alle Dateien im Ordner zurückgibt
-    private func allFiles(inFolderWith id: UUID) throws -> [URL] {
-        let folderURL = try createFolder(with: id)
-        let fileURLs = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
-        return fileURLs
-    }
-
-    private func getImageFiles(inFolderWith id: UUID) throws -> [URL] {
-        let allFiles = try allFiles(inFolderWith: id)
-        return allFiles.filter { $0.pathExtension.lowercased() == "jpg" }
-    }
-
-    private func getVideoFiles(inFolderWith id: UUID) throws -> [URL] {
-        let allFiles = try allFiles(inFolderWith: id)
-        return allFiles.filter { $0.pathExtension.lowercased() == "mp4" }
-    }
-
-    func getFiles(inFolderWith id: UUID) throws -> [URL] {
-        return try allFiles(inFolderWith: id)
-    }
-    
-    // MARK: - Funktion um Medien hochzuladen und sie am ende auf dem Gerät löschen
-    
     func uploadAllPendingMedia(isUploading: inout Bool, setErrorMessage: @escaping (String) -> Void) async throws {
         print("🔄 Starte Upload aller Medien...")
 
@@ -238,8 +154,8 @@ class LocalRepository {
     }
 
     private func uploadImageToSupabase(mediaDTO: MediaDTO, imageData: Data) async -> String? {
-        let supabaseURL = apiHost.supabase
-        let supabaseKey = apiKey.supabase
+        let supabaseURL = APIHost.supabase
+        let supabaseKey = APIKey.supabase
         let bucketName = "media-files"
         let fileName = "\(mediaDTO.id.uuidString).jpg"
         
@@ -270,8 +186,8 @@ class LocalRepository {
     }
 
     private func uploadVideoToSupabase(mediaDTO: MediaDTO, videoData: Data) async -> String? {
-        let supabaseURL = apiHost.supabase
-        let supabaseKey = apiKey.supabase
+        let supabaseURL = APIHost.supabase
+        let supabaseKey = APIKey.supabase
         let bucketName = "media-files"
         let fileName = "\(mediaDTO.id.uuidString).mp4"
         
@@ -301,7 +217,105 @@ class LocalRepository {
         }
     }
     
-    // Hilfsfunktion, um den Ordnerpfad basierend auf der UUID zu erhalten (ohne neuen Ordner zu erstellen)
+    // MARK: - Cache Storage (Bilder & Videos)
+    func storeImageInCache(_ image: UIImage, id: UUID) throws -> URL {
+        let folderURL = try createFolder(with: id)
+        // Optional: Einzigartigen Dateinamen innerhalb des Ordners generieren
+        let fileName = "image-\(UUID().uuidString).jpg"
+        let fileURL = folderURL.appendingPathComponent(fileName)
+        
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            throw NSError(domain: "storeImageInCache", code: 1, userInfo: [
+                NSLocalizedDescriptionKey: "Bild konnte nicht konvertiert werden."
+            ])
+        }
+        try imageData.write(to: fileURL)
+        print("Successfully stored image at \(fileURL)")
+        return fileURL
+    }
+    
+    // Mehrere Bilder ablegen
+    func storeImagesInCache(_ images: [UIImage], id: UUID) throws -> [URL] {
+        var storedURLs: [URL] = []
+        for image in images {
+            let storedURL = try storeImageInCache(image, id: id)
+            storedURLs.append(storedURL)
+        }
+        return storedURLs
+    }
+    
+    // Mehrere Videos ablegen
+    func storeVideosInCache(_ videoURLs: [URL], id: UUID) throws -> [URL] {
+        var storedURLs: [URL] = []
+        for videoURL in videoURLs {
+            let storedURL = try storeVideoInCache(videoURL, id: id)
+            storedURLs.append(storedURL)
+        }
+        return storedURLs
+    }
+    
+    func storeVideoInCache(_ videoURL: URL, id: UUID) throws -> URL {
+        let folderURL = try createFolder(with: id)
+        let fileName = "video-\(UUID().uuidString).mp4"
+        let destinationURL = folderURL.appendingPathComponent(fileName)
+        
+        // Bei temporären URLs aus dem Picker evtl. SecurityScopedResource beachten
+        var videoData: Data
+        if videoURL.startAccessingSecurityScopedResource() {
+            defer { videoURL.stopAccessingSecurityScopedResource() }
+            videoData = try Data(contentsOf: videoURL)
+        } else {
+            videoData = try Data(contentsOf: videoURL)
+        }
+        
+        try videoData.write(to: destinationURL)
+        print("Successfully stored video at \(destinationURL)")
+        return destinationURL
+    }
+    
+    // MARK: - File Management
+    private func createFolder(with id: UUID) throws -> URL {
+        // 1) Hole das Cache-Verzeichnis
+        guard let cacheURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
+            throw NSError(
+                domain: "LocalRepository",
+                code: 0,
+                userInfo: [NSLocalizedDescriptionKey: "Cache-Verzeichnis nicht gefunden."]
+            )
+        }
+        // 2) Erzeuge den Ordnerpfad basierend auf der UUID
+        let folderURL = cacheURL.appendingPathComponent(id.uuidString)
+        
+        // 3) Falls der Ordner noch nicht existiert, erstelle ihn
+        if !FileManager.default.fileExists(atPath: folderURL.path) {
+            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+        }
+        print("Created new Folder in Cache for Media with ID \(id.uuidString)")
+        return folderURL
+    }
+
+    // Basisfunktion, die alle Dateien im Ordner zurückgibt
+    private func allFiles(inFolderWith id: UUID) throws -> [URL] {
+        let folderURL = try createFolder(with: id)
+        let fileURLs = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
+        return fileURLs
+    }
+
+    private func getImageFiles(inFolderWith id: UUID) throws -> [URL] {
+        let allFiles = try allFiles(inFolderWith: id)
+        return allFiles.filter { $0.pathExtension.lowercased() == "jpg" }
+    }
+
+    private func getVideoFiles(inFolderWith id: UUID) throws -> [URL] {
+        let allFiles = try allFiles(inFolderWith: id)
+        return allFiles.filter { $0.pathExtension.lowercased() == "mp4" }
+    }
+
+    func getFiles(inFolderWith id: UUID) throws -> [URL] {
+        return try allFiles(inFolderWith: id)
+    }
+    
+    // MARK: - Hilfsfunktion, um den Ordnerpfad basierend auf der UUID zu erhalten (ohne neuen Ordner zu erstellen)
     private func folderURL(for id: UUID) -> URL? {
         guard let cacheURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { return nil }
         return cacheURL.appendingPathComponent(id.uuidString)

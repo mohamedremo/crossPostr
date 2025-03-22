@@ -8,16 +8,12 @@ import Foundation
 
 class SocialManager {
     static let shared = SocialManager()
+    
     private init() {}
 
-    /// Referenz auf den OAuthManager, um an die Tokens zu kommen
     private let oauthManager = OAuthManager.shared
-    
-    /// Beispiel: Falls du einen Post-Request an Twitter/FB schickst,
-    /// könntest du hier auch eine "SocialRemoteRepository" anlegen.
-    /// Oder du rufst direkt in `OAuthManager` an, je nach Geschmack.
 
-    func post(content: Post, to provider: OAuthProvider) async throws {
+    func post(post: Post, to provider: OAuthProvider) async throws {
         // 1) Token checken
         guard let token = oauthManager.token(for: provider) else {
             throw SocialError.noToken
@@ -26,61 +22,74 @@ class SocialManager {
         // 2) Je nach provider den passenden Endpoint callen:
         switch provider {
         case .twitter:
-            try await postToTwitter(token: token, content: content)
+            try await postTweet(token: token, post: post)
         case .facebook:
-            try await postToFacebook(token: token, content: content)
+            try await postToFacebook(token: token, post: post)
         case .instagram:
-            try await postToInstagram(token: token, content: content)
+            try await postToInstagram(token: token, post: post)
         }
     }
 
-    /// Erzeugt einen URLRequest mit den nötigen Headern für JSON + Bearer-Token.
-    private func makeRequest(method: String, urlString: String, token: String) throws -> URLRequest {
-        guard let url = URL(string: urlString) else {
+    private func postTweet(token: String, post: Post) async throws {
+        // 1. URL erstellen
+        guard let url = URL(string: "https://api.twitter.com/2/tweets") else {
+            print("❌ Ungültige URL")
             throw SocialError.invalidURL
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = method
-        // JSON-Header
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        // Bearer-Token
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
-    }
+        print("Starte tweet post mit token \(token) und post \(post.content)")
 
-    private func postToTwitter(token: String, content: Post) async throws {
-        // 1. Request erstellen
-        var request = try makeRequest(
-            method: "POST",
-            urlString: "https://api.twitter.com/2/tweets",
-            token: token
-        )
+        // 2. JSON-Body mit Text
+        let body: [String: Any] = [
+            "text": post.content
+        ]
 
-        // 2. JSON-Body für den Tweet
-        let body = ["text": content.content]
-        request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
-
-        // 3. Request ausführen
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse else {
+        // 3. Body in JSON-Daten umwandeln
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: body) else {
+            print("❌ Konnte Body nicht serialisieren")
             throw SocialError.invalidResponse
         }
 
-        // 4. Statuscode auswerten
-        if httpResponse.statusCode != 200 && httpResponse.statusCode != 201 {
-            let errorResponse = String(data: data, encoding: .utf8)
-            print("Fehler: Twitter-Status \(httpResponse.statusCode) - \(errorResponse ?? "Keine Antwort")")
+        // 4. Request vorbereiten
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        print(request.url?.absoluteString)
+
+        // 5. Request senden
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        // 6. Response überprüfen
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("❌ Keine gültige HTTP-Antwort erhalten")
+            throw SocialError.invalidResponse
+        }
+
+        print("📡 Status Code: \(httpResponse.statusCode)")
+        print("📎 Header: \(httpResponse.allHeaderFields)")
+
+        // Erfolgreiche Statuscodes: 200 (OK) oder 201 (Created)
+        guard (200...299).contains(httpResponse.statusCode) else {
+            let errorResponse = String(data: data, encoding: .utf8) ?? "Keine Antwort"
+            print("❌ Fehler: Status \(httpResponse.statusCode) – \(errorResponse)")
             throw SocialError.serverError(httpResponse.statusCode)
         }
 
-        print("Tweet erfolgreich gesendet!")
+        // Erfolgreiche JSON-Antwort
+        if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
+            print("✅ Antwort: \(json)")
+        } else {
+            print("✅ Status \(httpResponse.statusCode), aber JSON konnte nicht geparst werden.")
+        }
     }
 
-    private func postToFacebook(token: String, content: Post) async throws {
+    private func postToFacebook(token: String, post: Post) async throws {
         // analog: Graph API
     }
 
-    private func postToInstagram(token: String, content: Post) async throws {
+    private func postToInstagram(token: String, post: Post) async throws {
         // analog: Instagram Graph API
     }
 }

@@ -2,21 +2,21 @@ import SwiftUI
 import GoogleSignIn
 import Foundation
 
-struct ContentView: View {
+struct MainView: View {
     @ObservedObject var authVM: AuthViewModel
     @ObservedObject var tabVM: TabBarViewModel
-    @ObservedObject var postVM: CreateViewModel
     @ObservedObject var dashVM: DashboardViewModel
     @ObservedObject var createVM: CreateViewModel
+    @ObservedObject var setsVM: SettingsViewModel
     
     var body: some View {
         if authVM.isLoggedIn {
             MainTabView(
                 tabVM: tabVM,
                 authVM: authVM,
-                postVM: postVM,
                 dashVM: dashVM,
-                createVM: createVM
+                createVM: createVM,
+                setsVM: setsVM
             )
             .environmentObject(ErrorManager.shared)
         } else {

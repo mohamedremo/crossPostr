@@ -4,9 +4,9 @@ import SwiftUI
 struct MainTabView: View {
     @ObservedObject var tabVM: TabBarViewModel
     @ObservedObject var authVM: AuthViewModel
-    @ObservedObject var postVM: CreateViewModel
     @ObservedObject var dashVM: DashboardViewModel
     @ObservedObject var createVM: CreateViewModel
+    @ObservedObject var setsVM: SettingsViewModel
 
     var body: some View {
         TabBarView(vM: tabVM) {
@@ -15,14 +15,14 @@ struct MainTabView: View {
                 DashboardView(viewModel: dashVM, authVM: authVM, createVM: CreateViewModel())
                     .environmentObject(ErrorManager.shared)
             case .create:
-                CreateView(viewModel: postVM)
+                CreateView(viewModel: createVM)
                     .environmentObject(ErrorManager.shared)
             case .settings:
-                SettingsView(vm: authVM )
+                SettingsView(vM: setsVM )
                     .environmentObject(ErrorManager.shared)
                 
             case .info:
-                TwitterLoginView()
+                Text("Coming Soon")
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)

@@ -65,7 +65,7 @@ struct RegisterScreen: View {
                                 Spacer()
                             }
                             
-                            SecureField("Password", text: $vM.password, prompt: Text(""))
+                            SecureField("Password", text: $vM.passwordRetry, prompt: Text(""))
                                 .textFieldStyle(.roundedBorder)
                                 .background(.clear)
                                 .padding(.horizontal)

@@ -5,34 +5,34 @@ import SwiftUI
 struct crosspostrApp: App {
     @StateObject var authVM: AuthViewModel = AuthViewModel()
     @StateObject var tabVM: TabBarViewModel = TabBarViewModel()
-    @StateObject var postVM: CreateViewModel = CreateViewModel()
     @StateObject var dashVM: DashboardViewModel = DashboardViewModel()
     @StateObject var createVM: CreateViewModel = CreateViewModel()
+    @StateObject var setsVM: SettingsViewModel = SettingsViewModel()
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
-    
+
     // MARK: - FIREBASE - Initialisierung
     init() {
-        Utils.shared.loadRocketSimConnect()
         FirebaseConfiguration.shared.setLoggerLevel(.min)
         FirebaseApp.configure()
     }
-    
+
     var body: some Scene {
         WindowGroup {
             if hasOnboarded {
-                ContentView(
+                MainView(
                     authVM: authVM,
                     tabVM: tabVM,
-                    postVM: postVM,
                     dashVM: dashVM,
-                    createVM: createVM
+                    createVM: createVM,
+                    setsVM: setsVM
                 )
-                .onOpenURL(perform: Utils.shared.handleOpenURL) /// Verarbeitet Google, Facebook & Snapchat Logins (Für Access-)
+                .onOpenURL(perform: Utils.shared.handleOpenURL)
                 .task {
-                    await dashVM.fetchAllRemotes() // Start
-                    dashVM.getAllPosts()
+                    if authVM.isLoggedIn {
+                        await dashVM.fetchAllRemotes()
+                        dashVM.getAllPosts()
+                    }
                 }
-                
             } else {
                 OnboardingView(hasOnboarded: $hasOnboarded)
             }

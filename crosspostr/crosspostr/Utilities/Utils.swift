@@ -11,11 +11,6 @@ class Utils {
 
     // MARK: - UI Helpers
 
-    /**
-     Retrieves the root view controller of the application to present authentication flows with GoogleSignIn.
-
-     - Returns: The currently visible `UIViewController`.
-     */
     func getRootViewController() -> UIViewController? {
         guard
             let scene = UIApplication.shared.connectedScenes.first
@@ -27,12 +22,6 @@ class Utils {
         return getVisibleViewController(from: rootViewController)
     }
 
-    /**
-     Recursively finds the top-most presented view controller.
-
-     - Parameter vc: The root `UIViewController` to start searching from.
-     - Returns: The currently presented `UIViewController`.
-     */
     func getVisibleViewController(from vc: UIViewController) -> UIViewController {
         if let nav = vc as? UINavigationController {
             return getVisibleViewController(from: nav.visibleViewController!)
@@ -61,7 +50,9 @@ class Utils {
         }
     }
     
-    // MARK: - Facebook mit Google-Konto verknüpfen (Nur Access Token speichern)
+    
+    
+    // MARK: - OAuth Redirect Handling (Google als Basis, Facebook optional, Snapchat für Creative Kit)
     func handleFacebookLogin(url: URL) {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               let fragment = components.fragment else {
@@ -90,18 +81,6 @@ class Utils {
         }
     }
     
-    // Load RocketSim framework for Network Monitoring, print error if it fails.
-    func loadRocketSimConnect() {
-        #if DEBUG
-        guard (Bundle(path: "/Applications/RocketSim.app/Contents/Frameworks/RocketSimConnectLinker.nocache.framework")?.load() == true) else {
-            print("Failed to load linker framework")
-            return
-        }
-        print("RocketSim Connect successfully linked")
-        #endif
-    }
-    
-    // MARK: - OAuth Redirect Handling (Google als Basis, Facebook optional, Snapchat für Creative Kit)
     func handleOpenURL(url: URL) {
         let urlString = url.absoluteString
         
