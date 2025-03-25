@@ -1,8 +1,12 @@
+//
+//  ProfileDTO.swift
+//  crosspostr
+//
+//  Created by Mohamed Remo on 23.03.25.
+//
 import Foundation
-import SwiftData
 
-@Model
-class Profile: Identifiable {
+struct ProfileDTO: Codable, Sendable {
     var id: String
     var firstName: String
     var fullName: String
@@ -10,7 +14,7 @@ class Profile: Identifiable {
     var profileImageUrl: String?
 
     init(
-        id: String = UUID().uuidString,
+        id: String,
         firstName: String,
         fullName: String,
         email: String,
@@ -23,10 +27,9 @@ class Profile: Identifiable {
         self.profileImageUrl = profileImageUrl
     }
 }
-
-extension Profile {
-    func toProfileDTO() -> ProfileDTO {
-        ProfileDTO(
+extension ProfileDTO {
+    func toProfile() -> Profile {
+        return Profile(
             id: self.id,
             firstName: self.firstName,
             fullName: self.fullName,

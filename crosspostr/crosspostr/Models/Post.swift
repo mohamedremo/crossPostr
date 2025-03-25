@@ -188,8 +188,77 @@ class Post: Identifiable {
             score -= 10 // Zu lang
         }
 
-        // Sicherheit: Score darf nicht negativ sein
-        return max(score, 0)
+        // 🚫 Capslock-Rate: Wenn mehr als 30% Großbuchstaben sind, wirkt es schreiend/unprofessionell
+        let uppercaseCount = content.filter { $0.isUppercase }.count
+        let capRate = Double(uppercaseCount) / Double(max(content.count, 1))
+        if capRate > 0.3 {
+            score -= 10
+        }
+
+        // 🕒 Zeitabhängigkeit (z.B. nächtliches Posten wirkt evtl. unpassend)
+        let hour = Calendar.current.component(.hour, from: createdAt)
+        if hour < 6 || hour > 22 {
+            score -= 5 // Inaktive Zeiten
+        }
+
+        // ❌ Wiederholungen: Wenn bestimmte Wörter zu oft auftauchen
+        let wordFreq = Dictionary(grouping: wordsInContent.map { String($0) }, by: { $0 })
+            .mapValues { $0.count }
+        let highFreqWords = wordFreq.filter { $0.value > 5 }
+        if !highFreqWords.isEmpty {
+            score -= 5
+        }
+
+        // ✨ Mischung aus Satzzeichen – stilistische Vielfalt wirkt menschlicher
+        let punctuationVariety = Set(content.filter { [".", "!", "?", ","].contains($0) }).count
+        if punctuationVariety >= 3 {
+            score += 5
+        }
+
+        // 🤖 Werbliche Begriffe erkennen
+        let adWords = ["jetzt kaufen", "angebot", "rabatt", "sichern sie sich", "nur heute", "limited", "sale"]
+        if adWords.contains(where: { content.lowercased().contains($0) }) {
+            score -= 15
+        }
+
+        // 🧃 Übermäßiger Einsatz von Ausrufezeichen kann unauthentisch wirken
+        let exclamationCount = content.filter { $0 == "!" }.count
+        if exclamationCount > 3 {
+            score -= 5
+        }
+
+        // 📣 Marketingphrasen erkennen
+        let marketingPhrases = [
+            "verpasse nicht", "nur heute", "exklusiv", "kostenlos", "gratis", "jetzt zugreifen", "nicht verpassen"
+        ]
+        if marketingPhrases.contains(where: { content.lowercased().contains($0) }) {
+            score -= 10
+        }
+
+        // 🧩 Struktur: Absätze oder Satztrennung
+        let sentenceCount = content.components(separatedBy: [".", "!", "?"]).filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.count
+        if sentenceCount >= 2 {
+            score += 5 // Wirkt überlegter und strukturierter
+        }
+
+        // 🧘 Emojis in Text integriert (nicht am Ende gestapelt)
+        let emojiScalars = content.unicodeScalars.filter { $0.properties.isEmoji }
+        let emojiIndices = emojiScalars.compactMap { scalar in
+            content.unicodeScalars.firstIndex(of: scalar)?.utf16Offset(in: content)
+        }
+        if emojiIndices.contains(where: { $0 < content.count - 4 }) {
+            score += 5 // Emojis sinnvoll eingebettet
+        }
+
+        // 🪪 Verwendung des Vornamens oder direkter Anrede
+        let directAddress = ["du", "dein", "euch", "ihr"]
+        if wordsInContent.contains(where: { directAddress.contains(String($0)) }) {
+            score += 5
+        }
+
+        // Begrenze Score auf 0–100
+        score = round(score)
+        return max(min(score, 100), 0)
     }
 
 }
@@ -223,7 +292,7 @@ enum Platform: String, CaseIterable, Hashable {
             case .instagram:
                 return ("Instagram", "instagram_icon")
             case .twitter:
-                return ("Twitter", "twitter_icon")
+                return ("X", "twitter_icon")
             case .facebook:
                 return ("Facebook", "facebook_icon")
             case .snapchat:
