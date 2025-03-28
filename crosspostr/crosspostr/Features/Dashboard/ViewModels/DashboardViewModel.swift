@@ -36,8 +36,9 @@ class DashboardViewModel: ObservableObject {
         guard let mediaId = post.mediaId else {
             return []
         }
-        // Liefert alle Dateien im Ordner für die gegebene mediaId
-        return repo.localRepository.getFiles(inFolderWith: mediaId)
+        let files = repo.localRepository.getFiles(inFolderWith: mediaId)
+        print("📦 Medien für Post \(post.id): \(files)")
+        return files
     }
 
     /**

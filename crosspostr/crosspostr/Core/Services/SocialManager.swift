@@ -122,6 +122,25 @@ class SocialManager {
     private func postToInstagram(token: String, post: Post) throws {
         // analog: Instagram Graph API
     }
+    
+    var isLoading: Bool = false
+}
+
+extension SocialManager {
+    // TODO: defer function austesten.
+    func testFunction() async -> Bool? {
+        isLoading = true
+        defer {
+            //Gehört zum do catch und funktioniert auch nur damit
+            // WIrd wenn die funktion returned wird ausgefphrt.
+            isLoading = false
+        }
+        do {
+            return true
+        } catch {
+            return nil
+        }
+    }
 }
 
 /// Represents errors that may occur during social media posting via `SocialManager`.
@@ -131,3 +150,5 @@ enum SocialError: Error {
     case invalidResponse
     case serverError(Int)
 }
+
+

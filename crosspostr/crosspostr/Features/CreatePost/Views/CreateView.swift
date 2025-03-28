@@ -21,7 +21,20 @@ struct CreateView: View {
                 VStack(spacing: 20) {
                     //                    TopBarView(vM: setsVM)
                     PlatformSelectionView(viewModel: vM)
+                    
+                    MediaPostView(vM: vM)
+                
+                    Text("Beschreibung:")
+                        .font(.headline)
+                        .padding(.leading)
+                        .fontWeight(.ultraLight)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     DescriptionTextField(text: $vM.postText)
+                    .onChange(of: vM.postText) { newText in
+                        let score = PostAnalyzer.calculateAuthenticityScore(for: newText, createdAt: Date())
+                        authenticityScore = score
+                        showLowScoreWarning = score < 40
+                    }
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Authentizitäts-Score: \(Int(authenticityScore))")
@@ -60,77 +73,47 @@ struct CreateView: View {
                         vM.loadSelectedMedia()
                     }
                     
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
-                            ForEach(vM.images, id: \.self) { image in
-                                ZStack(alignment: .topTrailing) {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(maxWidth: screen.width / 2, maxHeight: 200)
-                                        .cornerRadius(12)
-                                        .transition(.move(edge: .leading))
-                                        .animation(.easeInOut, value: vM.images)
-                                    
-                                    Button {
-                                        withAnimation { vM.deleteImage(image: image) }
-                                    } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(.red)
-                                            .padding(8)
-                                    }
-                                }
-                            }
-                            
-                            ForEach(vM.videoURLs, id: \.self) { url in
-                                if let player = vM.videoPlayers[url] {
-                                    ZStack(alignment: .topTrailing) {
-                                        CustomVideoPlayer(player: player)
-                                            .frame(width: screen.width / 2, height: 200)
-                                            .cornerRadius(12)
-                                            .transition(.move(edge: .leading))
-                                            .animation(.easeInOut, value: vM.videoURLs)
-                                        
-                                        Button {
-                                            withAnimation { vM.deleteVideo(url: url) }
-                                        } label: {
-                                            Image(systemName: "xmark.circle.fill")
-                                                .foregroundColor(.red)
-                                                .padding(8)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                     
                     if vM.isUploading {
                         ProgressView()
                     }
                     
                     LiquidMetalButton {
-                        Task {
-                            await vM.post()
-                            withAnimation {
-                                showSuccessMessage = false
-                            }
-                        }
+                        vM.postToTwitter()
+                        vM.uploadPostToSupabase()
                     }
                     
-                    if showSuccessMessage {
+                    if vM.showSuccessMessage {
                         Text("✅ Erfolgreich gesendet.")
                             .font(.headline)
-                            .foregroundColor(.green)
                             .padding()
-                            .background(Color.white)
-                            .cornerRadius(10)
-                            .transition(.scale)
-                            .animation(.easeInOut, value: showSuccessMessage)
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(12)
+                            .shadow(radius: 10)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                            .animation(.easeInOut, value: vM.showSuccessMessage)
                     }
                     
                     Spacer()
                 }
                 .frame(minHeight: screenHeight)
+                .background(
+                    Rectangle()
+                        .fill(Color.clear)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            Utils.shared.hideKeyboard()
+                        }
+                )
+                .onChange(of: vM.showSuccessMessage) { newValue in
+                    if newValue {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            withAnimation {
+                                vM.showSuccessMessage = false
+                            }
+                        }
+                    }
+                }
                 Spacer()
                     .frame(height: 84)
             }
@@ -138,7 +121,61 @@ struct CreateView: View {
     }
 }
 
-// MARK: - PlatformSelectionView
+
+
+// MARK: - Components
+
+struct MediaPostView: View {
+    @ObservedObject var vM: CreateViewModel
+    private let screen = UIScreen.main.bounds
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+                ForEach(vM.images, id: \.self) { image in
+                    ZStack(alignment: .topTrailing) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: screen.width / 2, maxHeight: 200)
+                            .cornerRadius(12)
+                            .transition(.move(edge: .leading))
+                            .animation(.easeInOut, value: vM.images)
+                        
+                        Button {
+                            withAnimation { vM.deleteImage(image: image) }
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.red)
+                                .padding(8)
+                        }
+                    }
+                }
+                
+                ForEach(vM.videoURLs, id: \.self) { url in
+                    if let player = vM.videoPlayers[url] {
+                        ZStack(alignment: .topTrailing) {
+                            CustomVideoPlayer(player: player)
+                                .frame(width: screen.width / 2, height: 200)
+                                .cornerRadius(12)
+                                .transition(.move(edge: .leading))
+                                .animation(.easeInOut, value: vM.videoURLs)
+                            
+                            Button {
+                                withAnimation { vM.deleteVideo(url: url) }
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.red)
+                                    .padding(8)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.leading)
+    }
+}
 
 struct PlatformSelectionView: View {
     @ObservedObject var viewModel: CreateViewModel

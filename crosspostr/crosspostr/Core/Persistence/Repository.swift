@@ -181,7 +181,9 @@ class Repository {
         if let existingProfileDTO =
             await remoteRepository.getProfileObjectRemote()
         {
-            mainProfile = existingProfileDTO.toProfile()
+            let profile = existingProfileDTO.toProfile()
+            mainProfile = profile
+            localRepository.insertProfileObjectLocal(profile)
             print("profil \(existingProfileDTO) bei Supabase gefunden")
         } else {
             let newProfile = Profile(
@@ -192,10 +194,11 @@ class Repository {
                     ?? "no-email@example.com",
                 profileImageUrl: ""
             )
-            await remoteRepository.insertProfileObjectRemote(
-                newProfile: newProfile.toProfileDTO())
+            await remoteRepository.insertProfileObjectRemote(newProfile: newProfile.toProfileDTO())
             mainProfile = newProfile
             print("Kein profil gefunden neues erstellt.")
+            localRepository.insertProfileObjectLocal(newProfile) //Save Profile with SwiftData
+            mainProfile = localRepository.getProfileObjectLocal()
         }
     }
 

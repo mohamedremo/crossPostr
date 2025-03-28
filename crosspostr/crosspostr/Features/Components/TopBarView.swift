@@ -11,11 +11,7 @@ struct TopBarView: View {
     
     var body: some View {
         ZStack {
-            AppTheme.cardGradient.ignoresSafeArea(edges: .top)
-                .frame(maxHeight: 150)
-                .presentationCornerRadius(30)
-                .background(ignoresSafeAreaEdges: .top)
-
+            AppTheme.cardGradient.ignoresSafeArea()
             HStack {
                 VStack {
                     VStack {
@@ -23,7 +19,6 @@ struct TopBarView: View {
                             .resizable()
                             .frame(width: 100, height: 100)
                     }
-                    .padding()
                 }
 
                 VStack(alignment: .leading) {
@@ -39,5 +34,6 @@ struct TopBarView: View {
                 Spacer()
             }
         }
+        .frame(maxHeight: 120)
     }
 }

@@ -12,7 +12,7 @@ struct DashboardView: View {
 //            TopBarView(vM: setsVM)
             ZStack {
                 ScrollView {
-                    VStack(spacing: 6) {
+                    VStack(spacing: 10) {
                         
                         Button {
                             withAnimation {
@@ -20,6 +20,7 @@ struct DashboardView: View {
                             }
                         } label: {
                             DashboardNewPostCard()
+                                
                         }
 
                         ForEach(viewModel.posts, id: \.id) { post in

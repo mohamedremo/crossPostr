@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct ProfileDTO: Codable, Sendable {
+struct ProfileDTO: Codable, Sendable { //
     var id: String
     var firstName: String
     var fullName: String

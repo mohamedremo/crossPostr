@@ -31,6 +31,8 @@ class CreateViewModel: ObservableObject {
     @Published var isUploading: Bool = false
 
     @Published var errorMessage = ""
+    
+    @Published var showSuccessMessage: Bool = false
 
     private let repo = Repository.shared
     private let socialManager = SocialManager.shared
@@ -100,6 +102,7 @@ class CreateViewModel: ObservableObject {
         Task {
             do {
                 try await socialManager.post(post: newPost, to: .twitter)
+                showSuccessMessage = true
                 print("Tweet erfolgreich gesendet.")
             } catch {
                 errorManager.setError(error)
@@ -202,14 +205,12 @@ class CreateViewModel: ObservableObject {
     func post() async {
         // Prüfe, ob ein Post-Text eingegeben wurde
         guard postText.count >= 5 else {
-            errorMessage = "Der Post-Text muss mindestens 5 Zeichen lang sein."
-            print(errorMessage)
+            errorManager.setError(AppError.postTextTooShort)
             return
         }
         
         guard !postText.isEmpty && !selectedPlatforms.isEmpty else {
-            errorMessage = "Der Post-Text darf nicht leer sein. "
-            print(errorMessage)
+            errorManager.setError(AppError.postTextEmpty)
             return
         }
 

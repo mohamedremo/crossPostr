@@ -12,7 +12,6 @@ struct DescriptionTextField: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(AppTheme.cardGradient, lineWidth: 1)
             )
-            .padding()
             .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
             .padding(.horizontal)
             .toolbar {

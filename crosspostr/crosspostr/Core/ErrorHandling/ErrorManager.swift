@@ -19,6 +19,8 @@ struct ErrorWrapper: Identifiable {
 enum AppError: LocalizedError {
     case noUser
     case unknown
+    case postTextTooShort
+    case postTextEmpty
 
     var errorDescription: String? {
         switch self {
@@ -26,7 +28,10 @@ enum AppError: LocalizedError {
             return "Kein Benutzer angemeldet."
         case .unknown:
             return "Ein unbekannter Fehler ist aufgetreten."
-            
+        case .postTextTooShort:
+            return "Der Post-Text muss mindestens 5 Zeichen lang sein."
+        case .postTextEmpty:
+            return "Der Post-Text darf nicht leer sein. "
         }
     }
 }
@@ -39,6 +44,8 @@ enum AuthError: LocalizedError {
     case unknown(String)
     case noRootViewController
     case missingIDToken
+   
+    
 
     var errorDescription: String? {
         switch self {
@@ -56,6 +63,7 @@ enum AuthError: LocalizedError {
             return "Es konnte kein RootViewController gefunden werden."
         case .missingIDToken:
             return "Der ID-Token wurde nicht gefunden."
+        
         }
     }
 }

@@ -80,8 +80,10 @@ class AuthViewModel: ObservableObject {
         }
         Task {
             await repo.login(email: email, password: password)
-            isLoggedIn = true
-            resetStates()
+            if repo.currentUser != nil {
+                resetStates()
+                isLoggedIn = true
+            }
             print("Login Successful")
         }
     }
@@ -130,8 +132,10 @@ class AuthViewModel: ObservableObject {
 
         Task {
             await repo.register(email: email, password: password)
-            resetStates()
-            isLoggedIn = true
+            if repo.currentUser != nil {
+                resetStates()
+                isLoggedIn = true
+            }
             print("Register Successful with Email: \(email)")
         }
     }
@@ -161,7 +165,10 @@ class AuthViewModel: ObservableObject {
     func googleSignIn() {
         Task {
             await repo.googleSignIn()
-            isLoggedIn = true
+            if repo.currentUser != nil {
+                isLoggedIn = true
+            }
+            
         }
     }
 

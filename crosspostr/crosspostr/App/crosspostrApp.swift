@@ -30,6 +30,7 @@ struct crosspostrApp: App {
                 .onOpenURL(perform: Utils.shared.handleOpenURL)
                 .task {
                     if authVM.isLoggedIn {
+                        tabVM.loadProfile()
                         await dashVM.fetchAllRemotes()
                         dashVM.getAllPosts()
                     }

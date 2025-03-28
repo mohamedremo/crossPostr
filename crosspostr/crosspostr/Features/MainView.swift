@@ -23,3 +23,7 @@ struct MainView: View {
         }
     }
 }
+
+#Preview {
+    MainView(authVM: .init(), tabVM: .init(), dashVM: .init(), createVM: .init(), setsVM: .init())
+}
