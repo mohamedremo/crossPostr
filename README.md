@@ -1,4 +1,4 @@
-# crossPostr 🧵🚀
+# crossPostr 👝🚀
 
 **Deine Storys. Überall.**
 
@@ -20,34 +20,34 @@
 ### ⚙️ Architektur
 - MVVM (Model – View – ViewModel)
 - Clean Folder Structure (Features, Core, Models, Theme, etc.)
-- SwiftData + Supabase + Keychain + OAuth2
+- SwiftData + Supabase + Firebase Auth + Keychain + OAuth2
 
 ### 📁 Ordnerstruktur (aktuell)
 ```
 crosspostr/
 ├── App/                      # App-Start & Konfiguration
 ├── Core/                     # Services, Auth, Repositories
-├── Features/                 # Views + ViewModels pro Feature (z. B. CreatePost, Dashboard)
+├── Features/                 # Views + ViewModels pro Feature (z.​  z.​ B. CreatePost, Dashboard)
 ├── Models/                   # Post, Media, DTOs etc.
 ├── Theme/                    # Farben, Fonts, Styles
 ├── Utilities/                # Hilfsklassen, Extensions
-├── Resources/                # Assets & Previews
+└── Resources/                # Assets & Previews
 ```
 
 ### 🧠 Datenfluss & Speicherung
 - Supabase: Benutzerprofile, veröffentlichte Beiträge, Statistiken
 - SwiftData: Lokale Entwürfe, App-Einstellungen
-- Keychain: Token-Speicherung (z. B. für OAuth2)
-- Realtime-Sync mit Supabase Functions
+- Firebase Auth: Nutzer-Authentifizierung
+- Keychain: Token-Speicherung (z.​ B. für OAuth2)
 
 ---
 
 ## 🌐 API-Integrationen
 
-- 🔐 **Supabase API** – Auth, Datenbank, Storage, Realtime
+- 🔐 **Supabase API** – Datenbank, Storage, Realtime
+- 🔐 **Firebase Auth** – Nutzer-Authentifizierung
 - 🐦 **Twitter API (v2)** – Text-Tweets posten (OAuth2)
-- 📘 **Facebook Graph API** – Beiträge posten, Insights (in Planung)
-- 📸 **Instagram Graph API** – (geplant)
+- 📘️ **Meta Graph API** – Beiträge posten, Insights (Post-Funktion aktuell gesperrt, da Meta ohne Gewerbenachweis keinen Zugriff auf Publishing-Features erlaubt.)
 - 💼 **LinkedIn API** – (geplant)
 - 🧠 **KI-Modul / Supabase Function** – Trend-Erkennung & Optimierung
 
@@ -56,11 +56,7 @@ crosspostr/
 ## 📦 3rd-Party Frameworks
 
 - **Supabase Swift SDK** – Daten, Auth, Realtime
-- **SwiftData** – lokale Persistenz
-- **Kingfisher** – Bild-Caching
-- **SwiftCharts** – Performance-Visualisierung
-- **Firebase** – Push, Crashlytics
-- **SwiftUIX** – Zusätzliche SwiftUI-Elemente
+- **Firebase** – Authentifizierung, Push, Crashlytics
 - **Lottie** – Animationen
 - **AuthenticationServices / ASWebAuthenticationSession** – OAuth2 Login
 
@@ -68,7 +64,7 @@ crosspostr/
 
 ## 🚀 Kommende Features
 
-- [ ] Medien-Upload zu Twitter
+- [x] Medien-Upload zu Twitter
 - [ ] TikTok / YouTube / Pinterest Integration
 - [ ] Multi-User & Rollen (Teamverwaltung)
 - [ ] Noch smartere KI-Vorschläge & Rewriting
@@ -95,4 +91,4 @@ enum APIHost: String {
 
 ---
 
-> Made with <3333 by Mohamed Remo – Powered by Swift, Supabase, und viel zu viel Kaffee ☕
+> Made with <3333 by Mohamed Remo – Powered by Swift, Supabase, Firebase und viel zu viel Kaffee ☕
